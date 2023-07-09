@@ -1,0 +1,10 @@
+{
+  "btnGotIt": "Got It",
+  "btnOk": "OK",
+  "btnYes": "Yes",
+  "btnNo": "No",
+  "title": "Time Out Task",
+  "toolbar_title": "Time Out Task",
+  "morning_greeting": "Good Morning, {}",
+  "afternoon_greeting": "Good Afternoon, {}"
+}

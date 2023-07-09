@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btnGotIt">Got It</string>
+    <string name="btnOk">OK</string>
+    <string name="btnYes">Yes</string>
+    <string name="btnNo">No</string>
+    <string name="title">Time Out Task</string>
+    <string name="toolbar_title">Time Out Task</string>
+    <string name="morning_greeting">Good Morning, %s</string>
+    <string name="app_name">Take Out Time</string>
+</resources>
