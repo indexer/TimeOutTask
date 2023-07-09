@@ -10,6 +10,7 @@ espressoCore="3.5.1"
 androidGradlePlugin ="8.0.2"
 kotlinJetbrains="1.8.10"
 koinVersion="3.4.0"
+kotlinReflection="1.9.0"
 
 [libraries]
 #Android
@@ -26,6 +27,9 @@ koin-android = {module ="io.insert-koin:koin-androidx-compose",version.ref="koin
 junit = { module = "junit:junit", version.ref = "junitTest", name = "junit" }
 androidx-test-junit = { module = "androidx.test.ext:junit",version.ref="junit",name="android.test.junit"}
 androidx-core-espresso = {module="androidx.test.espresso:espresso-core",version.ref="espressoCore",name="espresso"}
+
+#kotlin
+jetbrain-reflection = {module="org.jetbrains.kotlin:kotlin-reflect",version.ref="kotlinReflection",name="jetbrain-reflection"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -36,5 +36,5 @@ dependencies {
   implementation(libs.androidx.ktx)
   implementation(libs.androidx.test.junit)
   implementation(libs.koin.android)
-  implementation("org.jetbrains.kotlin:kotlin-reflect")
+  implementation(libs.jetbrain.reflection)
 }
