@@ -86,9 +86,9 @@ dependencies {
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.core.espresso)
   implementation(libs.androidx.test.junit)
+  implementation(libs.koin.android)
 
   implementation(project(":common"))
-
 }
 
 
