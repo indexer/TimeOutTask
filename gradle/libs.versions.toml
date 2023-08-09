@@ -21,6 +21,8 @@ androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling
 androidx-life-cycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "kotlinRunTime", name = "androidx-life-cycle" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "composeMaterial", name = "androidx-compose-mater = ial" }
 androidx-compose-ui-tooling={module="androidx.compose.ui:ui-tooling",version.ref="composeUiVersion",name = "androidx-compose-ui-tooling"}
+androidx-compose-ui-foundation ={module= "androidx.compose.foundation:foundation-layout",version.ref="composeUiVersion",name="androidx.compose.foundation:foundation-layout"}
+
 #DI
 koin-android = {module ="io.insert-koin:koin-androidx-compose",version.ref="koinVersion",name="koin"}
 #Test

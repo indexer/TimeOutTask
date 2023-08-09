@@ -6,5 +6,7 @@
   "title": "Time Out Task",
   "toolbar_title": "Time Out Task",
   "morning_greeting": "Good Morning, {}",
-  "afternoon_greeting": "Good Afternoon, {}"
+  "afternoon_greeting": "Good Afternoon, {}",
+  "project_title": "What are you working on?",
+  "estimate_pomodoro_cycle": "Estimate Pomodoro:"
 }

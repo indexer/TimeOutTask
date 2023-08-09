@@ -36,5 +36,13 @@ dependencies {
   implementation(libs.androidx.ktx)
   implementation(libs.androidx.test.junit)
   implementation(libs.koin.android)
+  implementation(libs.androidx.compose.ui)
   implementation(libs.jetbrain.reflection)
+  implementation(libs.androidx.compose.material)
+  implementation(libs.androidx.activity.compose)
+  debugImplementation(libs.androidx.compose.ui.tooling)
+  implementation(libs.androidx.compose.ui.foundation)
+
+
+
 }

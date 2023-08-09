@@ -77,16 +77,16 @@ tasks.register("generateStringsXml") {
 
 dependencies {
   implementation(libs.androidx.ktx)
-  implementation(libs.androidx.compose.ui)
-  debugImplementation(libs.androidx.compose.ui.tooling)
-  implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.life.cycle)
-  implementation(libs.androidx.compose.material)
-  implementation(libs.androidx.activity.compose)
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.core.espresso)
   implementation(libs.androidx.test.junit)
   implementation(libs.koin.android)
+  implementation(libs.androidx.compose.ui)
+  implementation(libs.jetbrain.reflection)
+  implementation(libs.androidx.compose.material)
+  implementation(libs.androidx.activity.compose)
+  debugImplementation(libs.androidx.compose.ui.tooling)
 
   implementation(project(":common"))
 }
