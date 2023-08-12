@@ -17,7 +17,6 @@ import com.indexer.timeouttask.screen.pomodoroscreen.viewmodel.PomodoroScreenVie
 import com.indexer.timeouttask.ui.theme.TimeOutTaskTheme
 import org.koin.androidx.compose.koinViewModel
 
-@Preview(showBackground = true)
 @Composable
 fun MainScreen() {
   TimeOutTaskTheme {
@@ -25,11 +24,15 @@ fun MainScreen() {
     val processIntentWithCurrentValue = viewModel.provideProcessIntent()
     val state = viewModel.pomodoroScreenStateState.collectAsState()
     val alarmTimerState = viewModel.alarmState.collectAsState()
-    PomodoroAddScreen(
-      processIntentWithCurrentValue, state.value.pomodoroNumber, state.value.pomodoroTitle
-    )
+    PomodoroAddScreen(processIntentWithCurrentValue, state.value.pomodoroNumber, state.value.pomodoroTitle)
     AlarmTimerContent(state = alarmTimerState.value)
   }
+}
+
+@Preview
+@Composable
+fun PomodoroAddScreen(){
+  PomodoroAddScreen({}, 2,"What you wanna to do")
 }
 
 @Composable
