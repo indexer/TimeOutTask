@@ -25,6 +25,7 @@ androidx-compose-ui-foundation ={module= "androidx.compose.foundation:foundation
 
 #DI
 koin-android = {module ="io.insert-koin:koin-androidx-compose",version.ref="koinVersion",name="koin"}
+#koin-android-viewmodel ={module = "org.koin:koin-androidx-viewmodel",version.ref="koinVersion",name="koin"}
 #Test
 junit = { module = "junit:junit", version.ref = "junitTest", name = "junit" }
 androidx-test-junit = { module = "androidx.test.ext:junit",version.ref="junit",name="android.test.junit"}

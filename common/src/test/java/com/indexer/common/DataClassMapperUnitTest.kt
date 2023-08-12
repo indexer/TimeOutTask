@@ -5,11 +5,6 @@ import org.junit.Test
 
 import org.junit.Assert.*
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class DataClassMapperUnitTest {
 
   @Test
@@ -29,8 +24,9 @@ class DataClassMapperUnitTest {
   fun `simple mapping foo`() {
     data class FooIn(val name: String?)
     data class FooOut(val name: String)
+
     val fooMapper = DataClassMapper<FooIn, FooOut>()
-    assertEquals(fooMapper(FooIn("kermit")),FooOut("kermit"))
+    assertEquals(fooMapper(FooIn("kermit")), FooOut("kermit"))
   }
 
   @Test
@@ -40,8 +36,9 @@ class DataClassMapperUnitTest {
       val name: String,
       val age: Int
     )
+
     val fooWithTargetParamsMapper = DataClassMapper<FooIn, FooOut>()
-      .targetParameterSupplier("name"){"Default Name"}
+      .targetParameterSupplier("name") { "Default Name" }
       .targetParameterSupplier("age") { 18 }
     assertEquals(fooWithTargetParamsMapper(FooIn(null)), FooOut("Default Name", 18))
   }
