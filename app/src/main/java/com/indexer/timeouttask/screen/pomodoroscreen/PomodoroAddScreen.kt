@@ -1,6 +1,5 @@
 package com.indexer.timeouttask.screen.pomodoroscreen
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.indexer.timeouttask.R
 import com.indexer.timeouttask.commonbutton.CommonOutlineButton
@@ -58,8 +56,8 @@ fun PomodoroAddScreen(
       CommonTextField(
         label= stringResource(id = R.string.title_text),
         value = currentTitle,
-        onValueChange = { it ->
-            processIntentWithCurrentValue(UpdatePomodoroTitle(it))
+        onValueChange = {
+          processIntentWithCurrentValue(UpdatePomodoroTitle(it))
         },
         modifier = Modifier
           .fillMaxWidth()
@@ -67,7 +65,7 @@ fun PomodoroAddScreen(
         keyboardOptions = KeyboardOptions.Default.copy(
           imeAction = ImeAction.Done // Specify the desired IME action
         ),
-        onImeActionPerformed = { action: ImeAction ->
+        onImeActionPerformed = { _: ImeAction ->
         })
       // Estimate Pomodoro
       Text(
@@ -87,7 +85,7 @@ fun PomodoroAddScreen(
           modifier = Modifier
             .width(100.dp)
             .height(Dimensions.toolbarSize.medium),
-          onImeActionPerformed = { action: ImeAction ->
+          onImeActionPerformed = { _: ImeAction ->
             // Handle IME actions
           }
         )
