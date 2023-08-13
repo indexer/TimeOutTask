@@ -85,6 +85,9 @@ fun PomodoroAddScreen(
           modifier = Modifier
             .width(100.dp)
             .height(Dimensions.toolbarSize.medium),
+          keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done // Specify the desired IME action
+          ),
           onImeActionPerformed = { _: ImeAction ->
             // Handle IME actions
           }
