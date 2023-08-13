@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,7 +42,7 @@ fun PomodoroListScreen(
     state = dragDropListState.getLazyListState()
   ) {
     itemsIndexed(mutableItems.value) { index, item ->
-      val displacementOffset = if (index == dragDropListState.getCurrentIndexOfDraggedItem()) {
+      val displacementOffset = if (index == dragDropListState.getCurrentIndexOfDraggedListItem()) {
         dragDropListState.elementDisplacement.takeIf { it != 0f }
       } else {
         null
@@ -89,22 +90,28 @@ private fun DrawDraggableItem(
   item: String,
   displacementOffset: Float?
 ) {
+
+  val isBeingDragged = displacementOffset != null
+  val backgroundColor = if (isBeingDragged) {
+    Color.LightGray
+  } else {
+    Color.White
+  }
+
   Column(
     modifier = Modifier
       .graphicsLayer { translationY = displacementOffset ?: 0f }
       .background(Color.White, shape = RoundedCornerShape(4.dp))
       .fillMaxWidth()
+      .fillMaxHeight()
   ) {
     Card(
-      shape = RoundedCornerShape(8.dp),
+      shape = RoundedCornerShape(8.dp), backgroundColor = backgroundColor,
       modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)
     ) {
-      Text(
-        text = item,
-        modifier = Modifier.padding(16.dp)
-      )
+      Text(text = item, modifier = Modifier.padding(16.dp))
     }
   }
 }

@@ -26,12 +26,12 @@ class ItemListDragAndDropState(
 ) {
   private var draggedDistance by mutableStateOf(0f)
   private var initiallyDraggedElement by mutableStateOf<LazyListItemInfo?>(null)
-  private var currentIndexOfDraggedItem by mutableStateOf<Int?>(null)
+  private var currentIndexOfDraggedItem by mutableStateOf(-1)
   private var overscrollJob by mutableStateOf<Job?>(null)
 
 
   private val currentElement: LazyListItemInfo?
-    get() = currentIndexOfDraggedItem?.let {
+    get() = currentIndexOfDraggedItem.let {
       lazyListState.getVisibleItemInfoFor(absoluteIndex = it)
     }
 
@@ -40,7 +40,7 @@ class ItemListDragAndDropState(
 
   val elementDisplacement: Float?
     get() = currentIndexOfDraggedItem
-      ?.let { lazyListState.getVisibleItemInfoFor(absoluteIndex = it) }
+      .let { lazyListState.getVisibleItemInfoFor(absoluteIndex = it) }
       ?.let { item ->
         (initiallyDraggedElement?.offset ?: 0f).toFloat() + draggedDistance - item.offset
       }
@@ -58,7 +58,7 @@ class ItemListDragAndDropState(
 
   fun onDragInterrupted() {
     draggedDistance = 0f
-    currentIndexOfDraggedItem = null
+    currentIndexOfDraggedItem = -1
     initiallyDraggedElement = null
     overscrollJob?.cancel()
   }
@@ -80,7 +80,7 @@ class ItemListDragAndDropState(
             }
           }
           ?.also { item ->
-            currentIndexOfDraggedItem?.let { current -> onMove.invoke(current, item.index) }
+            currentIndexOfDraggedItem.let { current -> onMove.invoke(current, item.index) }
             currentIndexOfDraggedItem = item.index
           }
       }
@@ -103,7 +103,7 @@ class ItemListDragAndDropState(
     return lazyListState
   }
 
-  fun getCurrentIndexOfDraggedItem(): Int? {
+  fun getCurrentIndexOfDraggedListItem(): Int {
     return currentIndexOfDraggedItem
   }
 }
