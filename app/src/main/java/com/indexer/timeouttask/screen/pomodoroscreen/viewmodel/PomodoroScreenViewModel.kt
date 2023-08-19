@@ -18,9 +18,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     MutableStateFlow(PomodoroScreenState(pomodoroNumber = 1, ""))
   val pomodoroScreenStateState: StateFlow<PomodoroScreenState> = mPomodoroScreenState
   private val mAlarmState = MutableStateFlow(
-    AlarmTimerState(time = 1, isRunning = false, isPaused = false, isCompleted = false))
-
-  val alarmState: StateFlow<AlarmTimerState> = mAlarmState
+    AlarmTimerState(time = 1, isRunning = false, isPaused = false, isCompleted = false,false))
 
   fun provideProcessIntent(): (PomodoroScreenIntent) -> Unit {
     return { intent -> processPomodoroIntent(intent) }

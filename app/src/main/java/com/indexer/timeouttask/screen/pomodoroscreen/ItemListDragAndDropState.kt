@@ -9,33 +9,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import com.indexer.timeouttask.screen.mainscreen.PomodoroData
 import kotlinx.coroutines.Job
 
 @Composable
 fun rememberDragDropListState(
   lazyListState: LazyListState = rememberLazyListState(),
-  onMove: (Int, Int) -> Unit,
-): ItemListDragAndDropState {
+  onMove: (Int, Int) -> Unit): ItemListDragAndDropState {
   return remember { ItemListDragAndDropState(lazyListState, onMove) }
 }
 
 class ItemListDragAndDropState(
   private val lazyListState: LazyListState,
-  private val onMove: (Int, Int) -> Unit
+  private val onMove: (Int, Int) -> Unit,
 ) {
   private var draggedDistance by mutableStateOf(0f)
   private var initiallyDraggedElement by mutableStateOf<LazyListItemInfo?>(null)
   private var currentIndexOfDraggedItem by mutableStateOf(-1)
   private var overscrollJob by mutableStateOf<Job?>(null)
 
+  // Retrieve the currently dragged element's info
   private val currentElement: LazyListItemInfo?
     get() = currentIndexOfDraggedItem.let {
       lazyListState.getVisibleItemInfoFor(absoluteIndex = it)
     }
 
+  // Calculate the initial offsets of the dragged element
   private val initialOffsets: Pair<Int, Int>?
     get() = initiallyDraggedElement?.let { Pair(it.offset, it.offsetEnd) }
 
+  // Calculate the displacement of the dragged element
   val elementDisplacement: Float?
     get() = currentIndexOfDraggedItem
       .let { lazyListState.getVisibleItemInfoFor(absoluteIndex = it) }
@@ -53,6 +56,7 @@ class ItemListDragAndDropState(
       }
   }
 
+  // Handle interrupted drag gesture
   fun onDragInterrupted() {
     draggedDistance = 0f
     currentIndexOfDraggedItem = -1
@@ -61,6 +65,7 @@ class ItemListDragAndDropState(
   }
 
   // Helper function to calculate start and end offsets
+  // Calculate the start and end offsets of the dragged element
   private fun calculateOffsets(offset: Float): Pair<Float, Float> {
     val startOffset = offset + draggedDistance
     val currentElementSize = currentElement?.size ?: 0
@@ -68,6 +73,7 @@ class ItemListDragAndDropState(
     return startOffset to endOffset
   }
 
+  // Handle the drag gesture
   fun onDrag(offset: Offset) {
     draggedDistance += offset.y
     val topOffset = initialOffsets?.first ?: return
