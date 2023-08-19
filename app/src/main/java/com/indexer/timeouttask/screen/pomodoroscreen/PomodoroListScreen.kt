@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -124,70 +127,132 @@ private fun createTimer(
   }
 }
 
-@Composable private fun PomodoroListItem(
+@Composable
+private fun PomodoroListItem(
   item: PomodoroTask,
   displacementOffset: Float?,
 ) {
-
   val isBeingDragged = displacementOffset != null
-
   val backgroundColor = if (isBeingDragged || item.alarmTimerState.isCompleted) {
     Color.LightGray
   } else {
     Color.White
   }
 
-  Column(modifier = Modifier
-    .graphicsLayer { translationY = displacementOffset ?: 0f }
-    .background(Color.White, shape = RoundedCornerShape(4.dp))
-    .fillMaxWidth()
-    .fillMaxHeight()) {
-
-    val elapsedTime = remember { mutableStateOf(0L) }
-    UpdateElapsedTime(isRunning = item.alarmTimerState.isRunning, elapsedTime = elapsedTime)
-    val progressValue = elapsedTime.value.toFloat() / (25 * 60 * 1000).toFloat()
-
-    Card(
-      shape = RoundedCornerShape(8.dp), backgroundColor = backgroundColor,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
+  Column(
+    modifier = Modifier
+      .graphicsLayer { translationY = displacementOffset ?: 0f }
+      .background(Color.White, shape = RoundedCornerShape(4.dp))
+      .fillMaxWidth()
+      .fillMaxHeight()
+  ) {
+    Column(
+      modifier = Modifier.padding(start = 8.dp, 0.dp, 8.dp, 8.dp),
+      verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-      Row(
-        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        Box(
-          modifier = Modifier
-            .padding(8.dp)
-            .size(60.dp)
-            .background(
-              circularIndicatorBackgroundColor, shape = CircleShape
-            ), contentAlignment = Alignment.Center
-        ) {
-          CircularProgressIndicator(
-            progress = progressValue, modifier = Modifier.size(60.dp),
-            backgroundColor = circularIndicatorBackgroundColor, color = Purple200,
-            strokeWidth = 8.dp
-          )
-
-          Text(
-            text = "${(progressValue * 100).toInt()}%", fontSize = 13.sp,
-            fontWeight = FontWeight.Bold, color = Color.Black
-          )
-
-        }
-        Column(
-          modifier = Modifier.padding(start = 8.dp, 0.dp, 8.dp, 8.dp),
-          verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-          Text(text = item.title, modifier = Modifier.fillMaxWidth(), fontSize = 20.sp)
-          Text(text = item.description, modifier = Modifier.fillMaxWidth(), fontSize = 13.sp)
-        }
-      }
+      PomodoroProgressCard(item, backgroundColor)
     }
   }
 }
+
+@Composable
+private fun PomodoroProgressCard(
+  item: PomodoroTask,
+  backgroundColor: Color,
+) {
+  val elapsedTime = remember { mutableStateOf(0L) }
+  UpdateElapsedTime(isRunning = item.alarmTimerState.isRunning, elapsedTime = elapsedTime)
+  val progressValue = elapsedTime.value.toFloat() / (2 * 60 * 1000).toFloat()
+
+  Card(
+    shape = RoundedCornerShape(8.dp),
+    backgroundColor = backgroundColor,
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(8.dp)
+  ) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      if (progressValue < 0.99) {
+        PomodoroProgressBox(progressValue)
+      } else {
+        PomodoroCompletionBox()
+      }
+      PomodoroDetailsColumn(item)
+    }
+  }
+}
+
+@Composable
+private fun PomodoroProgressBox(progressValue: Float) {
+  Box(
+    modifier = Modifier
+      .padding(8.dp)
+      .size(60.dp)
+      .background(
+        circularIndicatorBackgroundColor,
+        shape = CircleShape
+      ),
+    contentAlignment = Alignment.Center
+  ) {
+    CircularProgressIndicator(
+      progress = progressValue,
+      modifier = Modifier.size(60.dp),
+      backgroundColor = circularIndicatorBackgroundColor,
+      color = Purple200,
+      strokeWidth = 8.dp
+    )
+    Text(
+      text = "${(progressValue * 100).toInt()}%",
+      fontSize = 13.sp,
+      fontWeight = FontWeight.Bold,
+      color = Color.Black
+    )
+  }
+}
+
+@Composable
+private fun PomodoroCompletionBox() {
+  Box(
+    modifier = Modifier
+      .padding(8.dp)
+      .size(60.dp)
+      .background(Purple200, shape = CircleShape),
+    contentAlignment = Alignment.Center
+  ) {
+    Icon(
+      imageVector = Icons.Default.Check,
+      contentDescription = null,
+      tint = Color.White,
+      modifier = Modifier.size(32.dp)
+    )
+  }
+}
+
+@Composable
+private fun PomodoroDetailsColumn(item: PomodoroTask) {
+  Column(
+    modifier = Modifier.padding(start = 8.dp, 0.dp, 8.dp, 8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp)
+  ) {
+    Text(
+      text = item.title,
+      modifier = Modifier.fillMaxWidth(),
+      fontSize = 20.sp
+    )
+    Text(
+      text = item.description,
+      modifier = Modifier.fillMaxWidth(),
+      fontSize = 13.sp
+    )
+  }
+}
+
+
+
 
 
 

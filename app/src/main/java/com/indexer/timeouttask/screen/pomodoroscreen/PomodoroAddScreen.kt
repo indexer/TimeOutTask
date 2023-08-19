@@ -17,8 +17,10 @@ import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -82,7 +84,9 @@ private fun PomodoroTitleInput(
 
 @Composable
 private fun TotalPomodoroTime(
-  currentValue: Int, processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit) {
+  currentValue: Int,
+  processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit,
+) {
   Row(
     modifier = Modifier
       .background(rowBackgroundColor)
@@ -90,27 +94,39 @@ private fun TotalPomodoroTime(
       .wrapContentHeight(),
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
-    // Display total time
-    val totalMinutes = currentValue * 25
-    val hours = totalMinutes / 60
-    val minutes = totalMinutes % 60
-    val timeText = if (hours > 0) {
-      "Total Time: $hours hr $minutes min"
-    } else {
-      "Total Time: $minutes min"
-    }
-    Text(timeText, Modifier.padding(Dimensions.spacing.small))
-    // Make It button
-    CommonOutlineButton(
-      modifier = Modifier.padding(Dimensions.spacing.small),
-      text = "Make It !",
-      onClick = {
-        processIntentWithCurrentValue(MakeIt)
-      },
-      buttonColor = Color.Black,
-      textColor = Color.White
-    )
+    DisplayTotalTime(currentValue)
+    MakeItButton(processIntentWithCurrentValue)
   }
+}
+
+@Composable
+private fun DisplayTotalTime(currentValue: Int) {
+  val totalMinutes = currentValue * 25
+  val hours = totalMinutes / 60
+  val minutes = totalMinutes % 60
+  val timeText = if (hours > 0) {
+    "Total Time: $hours hr $minutes min"
+  } else {
+    "Total Time: $minutes min"
+  }
+  Text(timeText, Modifier.padding(Dimensions.spacing.small))
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun MakeItButton(processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit) {
+  val keyboardController = LocalSoftwareKeyboardController.current
+
+  CommonOutlineButton(
+    modifier = Modifier.padding(Dimensions.spacing.small),
+    text = "Make It !",
+    onClick = {
+      keyboardController?.hide()
+      processIntentWithCurrentValue(MakeIt)
+    },
+    buttonColor = Color.Black,
+    textColor = Color.White
+  )
 }
 
 @Composable
@@ -127,7 +143,6 @@ private fun IncrementDecrementButtons(processIntentWithCurrentValue: (PomodoroSc
     modifier = Modifier.height(Dimensions.toolbarSize.medium),
     onClick = {
       processIntentWithCurrentValue(DecrementPomodoro)
-
     },
     icon = Filled.KeyboardArrowDown,
     buttonColor = Color.White

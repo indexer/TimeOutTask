@@ -92,10 +92,10 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
       }
 
       is PomodoroScreenIntent.MakeIt -> {
-        pomodoroScreenState.value = pomodoroScreenState.value
         setTimePomodoro(pomodoroScreenState.value.pomodoroNumber)
         val pomodoroTask = pomodoroTask(pomodoroScreenState.value)
         addPomodoroToList(pomodoroTask)
+        pomodoroScreenState.value = pomodoroScreenState.value.copy(pomodoroNumber = 1, pomodoroTitle = "")
       }
 
       is PomodoroScreenIntent.UpdatePomodoroTitle -> {
