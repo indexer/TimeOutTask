@@ -20,7 +20,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +32,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.indexer.timeouttask.screen.mainscreen.PomodoroData
+import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
 import com.indexer.timeouttask.ui.theme.Purple200
 import com.indexer.timeouttask.ui.theme.circularIndicatorBackgroundColor
 import kotlinx.coroutines.CoroutineScope
@@ -41,12 +40,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Composable fun PomodoroListScreen(
-  items: List<PomodoroData>,
+  items: List<PomodoroTask>,
   onMove: (Int, Int) -> Unit,
   modifier: Modifier = Modifier
 ) {
   val coroutineScope = rememberCoroutineScope()
-  val mutableItems = remember { mutableStateOf(items) }
   val overscrollJob = remember { mutableStateOf<Job?>(null) }
   val dragDropListState = rememberDragDropListState(onMove = onMove)
 
@@ -54,15 +52,12 @@ import kotlinx.coroutines.launch
     modifier = modifier.dragGestureHandler(coroutineScope, dragDropListState, overscrollJob),
     state = dragDropListState.getLazyListState()
   ) {
-    itemsIndexed(mutableItems.value) { index, item ->
+    itemsIndexed(items) { index, item ->
       val displacementOffset = if (index == dragDropListState.getCurrentIndexOfDraggedListItem()) {
         dragDropListState.elementDisplacement.takeIf { it != 0f }
       } else {
         null
       }
-
-
-      item.alarmTimerState.isRunning = index == 0 && !item.alarmTimerState.isRunning
       PomodoroListItem(item, displacementOffset)
     }
   }
@@ -105,25 +100,13 @@ private fun UpdateElapsedTime(
 ) {
   val initialTime = 25 * 60 * 1000L // Initial time in milliseconds
   val timer = remember {
-    createTimer(elapsedTime, initialTime)}
-  if (isRunning){
+    createTimer(elapsedTime, initialTime)
+  }
+  if (isRunning) {
     timer.start()
-  }else{
+  } else {
     elapsedTime.value = 0
   }
-
-    /*DisposableEffect(isRunning) {
-    if (isRunning) {
-      timer.start()
-    } else {
-      // If not running, reset the elapsed time to the default value
-      elapsedTime.value = 0
-    }
-    onDispose {
-      //timer.cancel()
-    }
-  }*/
-
 }
 
 private fun createTimer(
@@ -141,26 +124,8 @@ private fun createTimer(
   }
 }
 
-/*@Composable private fun UpdateElapsedTime(
-  isRunning: Boolean,
-  elapsedTime: MutableState<Long>
-) {
-  LaunchedEffect(isRunning) {
-    val timer = object : CountDownTimer(25 * 60 * 1000, 1000) {
-      override fun onTick(millisUntilFinished: Long) {
-        elapsedTime.value = 25 * 60 * 1000 - millisUntilFinished
-      }
-
-      override fun onFinish() {
-        // Timer finished
-      }
-    }
-   timer.start()
-  }
-}*/
-
 @Composable private fun PomodoroListItem(
-  item: PomodoroData,
+  item: PomodoroTask,
   displacementOffset: Float?,
 ) {
 

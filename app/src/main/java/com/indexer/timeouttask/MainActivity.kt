@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.indexer.timeouttask.screen.mainscreen.MainScreen
+import com.indexer.timeouttask.screen.mainscreen.PomodoroScreen
 import com.indexer.timeouttask.ui.theme.TimeOutTaskTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
             ,color = MaterialTheme.colors.background
         ) {
           Column {
-            MainScreen()
+            PomodoroScreen()
           }
         }
       }
