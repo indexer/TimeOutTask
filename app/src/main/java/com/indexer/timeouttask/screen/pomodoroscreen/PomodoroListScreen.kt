@@ -1,6 +1,5 @@
 package com.indexer.timeouttask.screen.pomodoroscreen
 
-import android.os.CountDownTimer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
@@ -97,43 +96,12 @@ private fun handleOverscrollJob(
 }
 
 @Composable
-private fun UpdateElapsedTime(
-  isRunning: Boolean,
-  elapsedTime: MutableState<Long>
-) {
-  val initialTime = 25 * 60 * 1000L // Initial time in milliseconds
-  val timer = remember {
-    createTimer(elapsedTime, initialTime)
-  }
-  if (isRunning) {
-    timer.start()
-  } else {
-    elapsedTime.value = 0
-  }
-}
-
-private fun createTimer(
-  elapsedTime: MutableState<Long>,
-  initialTime: Long
-): CountDownTimer {
-  return object : CountDownTimer(initialTime, 1000) {
-    override fun onTick(millisUntilFinished: Long) {
-      elapsedTime.value = initialTime - millisUntilFinished
-    }
-
-    override fun onFinish() {
-      // Timer finished
-    }
-  }
-}
-
-@Composable
 private fun PomodoroListItem(
   item: PomodoroTask,
   displacementOffset: Float?,
 ) {
   val isBeingDragged = displacementOffset != null
-  val backgroundColor = if (isBeingDragged || item.alarmTimerState.isCompleted) {
+  val backgroundColor = if (isBeingDragged) {
     Color.LightGray
   } else {
     Color.White
@@ -160,9 +128,6 @@ private fun PomodoroProgressCard(
   item: PomodoroTask,
   backgroundColor: Color,
 ) {
-  val elapsedTime = remember { mutableStateOf(0L) }
-  UpdateElapsedTime(isRunning = item.alarmTimerState.isRunning, elapsedTime = elapsedTime)
-  val progressValue = elapsedTime.value.toFloat() / (2 * 60 * 1000).toFloat()
 
   Card(
     shape = RoundedCornerShape(8.dp),
@@ -176,8 +141,8 @@ private fun PomodoroProgressCard(
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically
     ) {
-      if (progressValue < 0.99) {
-        PomodoroProgressBox(progressValue)
+      if (item.progress < 100f) {
+        PomodoroProgressBox(item.progress)
       } else {
         PomodoroCompletionBox()
       }
@@ -199,14 +164,14 @@ private fun PomodoroProgressBox(progressValue: Float) {
     contentAlignment = Alignment.Center
   ) {
     CircularProgressIndicator(
-      progress = progressValue,
+      progress = progressValue / 100,
       modifier = Modifier.size(60.dp),
       backgroundColor = circularIndicatorBackgroundColor,
       color = Purple200,
       strokeWidth = 8.dp
     )
     Text(
-      text = "${(progressValue * 100).toInt()}%",
+      text = "${progressValue.toInt()}%",
       fontSize = 13.sp,
       fontWeight = FontWeight.Bold,
       color = Color.Black

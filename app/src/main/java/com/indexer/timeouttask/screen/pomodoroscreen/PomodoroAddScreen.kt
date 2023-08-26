@@ -34,6 +34,7 @@ import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.UpdatePomodoroTitle
 import com.indexer.timeouttask.textfield.CommonTextField
 import com.indexer.timeouttask.ui.theme.Dimensions
+import com.indexer.timeouttask.ui.theme.Purple200
 import com.indexer.timeouttask.ui.theme.rowBackgroundColor
 
 @Composable
@@ -43,26 +44,37 @@ fun PomodoroAddScreen(
   currentTitle: String
 ) {
   Card(
-    modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(Dimensions.spacing.medium),
+    modifier = Modifier
+      .fillMaxWidth()
+      .wrapContentHeight()
+      .padding(Dimensions.spacing.medium),
     elevation = 4.dp
   ) {
     Column(
-      modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-      PomodoroTitleInput(currentTitle = currentTitle, processIntentWithCurrentValue = processIntentWithCurrentValue)
-      Row( modifier = Modifier.padding(8.dp,8.dp)) {
+      modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+    ) {
+      PomodoroTitleInput(
+        currentTitle = currentTitle, processIntentWithCurrentValue = processIntentWithCurrentValue
+      )
+      Row(modifier = Modifier.padding(8.dp, 8.dp)) {
         PomodoroNumberInput(currentValue, processIntentWithCurrentValue)
         Spacer(modifier = Modifier.width(Dimensions.spacing.small))
         IncrementDecrementButtons(processIntentWithCurrentValue)
       }
       TotalPomodoroTime(
-        currentValue = currentValue, processIntentWithCurrentValue = processIntentWithCurrentValue)
+        currentValue = currentValue, processIntentWithCurrentValue = processIntentWithCurrentValue
+      )
     }
   }
 }
 
 @Composable
 private fun PomodoroTitleInput(
-  currentTitle: String, processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit) {
+  currentTitle: String,
+  processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit
+) {
   CommonTextField(
     label = stringResource(id = R.string.title_text),
     value = currentTitle,
@@ -79,7 +91,9 @@ private fun PomodoroTitleInput(
     })
   Text(
     stringResource(id = R.string.estimate_pomodoro), Modifier.padding(
-    Dimensions.spacing.small, Dimensions.spacing.medium, 0.dp, Dimensions.spacing.small))
+    Dimensions.spacing.small, Dimensions.spacing.medium, 0.dp, Dimensions.spacing.small
+  )
+  )
 }
 
 @Composable
@@ -109,7 +123,7 @@ private fun DisplayTotalTime(currentValue: Int) {
   } else {
     "Total Time: $minutes min"
   }
-  Text(timeText, Modifier.padding(Dimensions.spacing.small))
+  Text(timeText, Modifier.padding(Dimensions.spacing.medium))
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -124,7 +138,7 @@ private fun MakeItButton(processIntentWithCurrentValue: (PomodoroScreenIntent) -
       keyboardController?.hide()
       processIntentWithCurrentValue(MakeIt)
     },
-    buttonColor = Color.Black,
+    buttonColor = Purple200,
     textColor = Color.White
   )
 }
@@ -137,7 +151,8 @@ private fun IncrementDecrementButtons(processIntentWithCurrentValue: (PomodoroSc
       processIntentWithCurrentValue(IncrementPomodoro)
     },
     icon = Filled.KeyboardArrowUp,
-    buttonColor = Color.White)
+    buttonColor = Color.White
+  )
   Spacer(modifier = Modifier.width(Dimensions.spacing.small))
   CommonOutlineButton(
     modifier = Modifier.height(Dimensions.toolbarSize.medium),
@@ -154,19 +169,21 @@ private fun PomodoroNumberInput(
   currentValue: Int,
   processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit
 ) {
-    CommonTextField(value = currentValue.toString(), onValueChange = {
-        if (it.isNotBlank()) {
-          processIntentWithCurrentValue(UpdatePomodoroNumber(it.toInt()))
-        }
-      },
-      modifier = Modifier.width(100.dp).height(Dimensions.toolbarSize.medium),
-      keyboardOptions = KeyboardOptions.Default.copy(
-        imeAction = ImeAction.Done // Specify the desired IME action
-      ),
-      onImeActionPerformed = { _: ImeAction ->
-        // Handle IME actions
-      }
-    )
+  CommonTextField(value = currentValue.toString(), onValueChange = {
+    if (it.isNotBlank()) {
+      processIntentWithCurrentValue(UpdatePomodoroNumber(it.toInt()))
+    }
+  },
+    modifier = Modifier
+      .width(100.dp)
+      .height(Dimensions.toolbarSize.medium),
+    keyboardOptions = KeyboardOptions.Default.copy(
+      imeAction = ImeAction.Done // Specify the desired IME action
+    ),
+    onImeActionPerformed = { _: ImeAction ->
+      // Handle IME actions
+    }
+  )
 }
 
 

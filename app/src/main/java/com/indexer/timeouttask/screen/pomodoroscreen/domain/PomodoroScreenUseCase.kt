@@ -5,7 +5,7 @@ class PomodoroScreenUseCase {
     state: PomodoroScreenState,
     value: Int
   ): PomodoroScreenState {
-    return state.copy(pomodoroNumber = value)
+    return state.copy(pomodoroDurationInMinutes = value)
   }
 
   fun updatePomodoroTitle(
@@ -19,7 +19,7 @@ class PomodoroScreenUseCase {
     state: PomodoroScreenState,
     value: Int
   ): PomodoroScreenState {
-    return state.copy(pomodoroNumber = value.plus(1))
+    return state.copy(pomodoroDurationInMinutes = value.plus(1))
   }
 
   fun decreasePomodoroNumber(
@@ -27,9 +27,9 @@ class PomodoroScreenUseCase {
     value: Int
   ): PomodoroScreenState {
     return if (value > 1) {
-      state.copy(pomodoroNumber = value.minus(1))
+      state.copy(pomodoroDurationInMinutes = value.minus(1))
     } else {
-      state.copy(pomodoroNumber = 1)
+      state.copy(pomodoroDurationInMinutes = 1)
     }
   }
 }

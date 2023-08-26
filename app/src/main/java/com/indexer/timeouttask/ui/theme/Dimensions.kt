@@ -11,6 +11,11 @@ data class Spacing(
   val large: Dp
 )
 
+data class RounderCornerSize(
+  val small: Dp,
+  val medium: Dp,
+)
+
 data class TextSize(
   val small: TextUnit,
   val normal: TextUnit,
@@ -28,6 +33,11 @@ object Dimensions {
     small = 8.dp,
     medium = 16.dp,
     large = 24.dp
+  )
+
+  val roundedCorner = RounderCornerSize(
+    small = 8.dp,
+    medium = 10.dp
   )
 
   val toolbarSize = ToolbarSize(

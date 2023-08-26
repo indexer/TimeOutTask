@@ -21,7 +21,7 @@ fun PomodoroScreen() {
     val pomodoroList = viewModel.pomodoroList.collectAsState()
 
     PomodoroAddScreen(
-      processIntentWithCurrentValue, state.value.pomodoroNumber, state.value.pomodoroTitle
+      processIntentWithCurrentValue, state.value.pomodoroDurationInMinutes, state.value.pomodoroTitle
     )
     PomodoroList(list = pomodoroList.value.toMutableList(), onMoveItem)
   }
@@ -30,13 +30,14 @@ fun PomodoroScreen() {
 data class PomodoroTask(
   var title: String,
   var description: String,
-  val alarmTimerState: AlarmTimerState
+  val alarmTimerState: AlarmTimerState,
+  var progress: Float
 )
 
 @Preview
 @Composable
 fun PomodoroAddScreen() {
-  PomodoroAddScreen({}, 2, "What you wanna to do")
+  PomodoroAddScreen({}, 2, "What you wanna to do Now")
 }
 
 @Composable
