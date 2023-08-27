@@ -144,7 +144,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     return 25 * pomodoroNumber * 60
   }
 
-  private fun getPomodoroDescription(pomodoroNumber: Int): String {
+   fun getPomodoroDescription(pomodoroNumber: Int): String {
     val totalMinutes = pomodoroNumber * 25
     val hours = totalMinutes / 60
     val minutes = totalMinutes % 60
