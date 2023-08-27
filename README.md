@@ -2,7 +2,7 @@
 Personal Project to Try Toml &amp; Compose
 
 # Video
-[![Watch the video](https://i.vimeocdn.com/video/858312338.jpg)](https://vimeo.com/858312338)
+![Demo Video]([https://i.imgur.com/yourgif.gif](https://videoapi-muybridge.vimeocdn.com/animated-thumbnails/image/fa2b8fb8-5b36-47cf-9be8-c28a00528a2a.gif?ClientID=vimeo-core-prod&Date=1693111164&Signature=b8acab840f52f82163b26ce138ee4f615fdcab01))
 
 
 ## What is TOML?
