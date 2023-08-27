@@ -1,7 +1,6 @@
 package com.indexer.timeouttask.screen.pomodoroscreen.viewmodel
 
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.AlarmTimerState
@@ -19,15 +18,13 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
 
   private val timeState = MutableStateFlow(AlarmTimerState())
 
-  private val pomodoroListScreenState = MutableStateFlow(emptyList<PomodoroTask>())
+  val pomodoroListScreenState = MutableStateFlow(emptyList<PomodoroTask>())
   val pomodoroList: StateFlow<List<PomodoroTask>> = pomodoroListScreenState
 
   private val taskCompleted = MutableStateFlow(false)
   val showCongratulationsScreen: StateFlow<Boolean> = taskCompleted
 
   private val completedTask = MutableStateFlow<PomodoroTask?>(null)
-
-
 
   private var currentTimer: CountDownTimer? = null
 
@@ -36,37 +33,38 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
   }
 
   fun getSwapFunction(): (Int, Int) -> Unit {
-    return { index1, index2 -> swapPomodoroItems(index1, index2) }
+    return { index1, index2 ->
+      swapPomodoroItems(index1, index2)
+    }
   }
-
 
   private fun swapPomodoroItems(
     fromIndex: Int,
     toIndex: Int
   ) {
-    if (pomodoroListScreenState.value[0].alarmTimerState.isActive) {
-      startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime, 0)
-    }
+
     // Reset progress and restart timer for the swapped items
-    if (pomodoroListScreenState.value[fromIndex].alarmTimerState.isActive
-      && pomodoroListScreenState.value[fromIndex].progress != 100f
+    if (pomodoroListScreenState.value[fromIndex].alarmTimerState.isActive && pomodoroListScreenState
+        .value[toIndex].progress != 100f
     ) {
       resetProgressAndRestartTimer(fromIndex)
     }
-    if (pomodoroListScreenState.value[toIndex].alarmTimerState.isActive
-      && pomodoroListScreenState.value[toIndex].progress != 100f
+    if (pomodoroListScreenState.value[toIndex].alarmTimerState.isActive && pomodoroListScreenState
+        .value[toIndex].progress != 100f
     ) {
       resetProgressAndRestartTimer(toIndex)
     }
+
     // Swap the items in the list
-    pomodoroListScreenState.value = pomodoroListScreenState.value.swap(fromIndex, toIndex)
+    val updatedList = pomodoroListScreenState.value.toMutableList()
+    val swapList = updatedList.swap(fromIndex, toIndex)
+    pomodoroListScreenState.value = swapList
   }
 
   private fun resetProgressAndRestartTimer(itemIndex: Int) {
     pomodoroListScreenState.value[itemIndex].progress = 0f
-    setTimePomodoro(
-      pomodoroListScreenState.value[itemIndex].alarmTimerState.elapsedTime.toInt(), itemIndex
-    )
+    val initialTime = pomodoroListScreenState.value[itemIndex].alarmTimerState.elapsedTime.toInt()
+    setTimePomodoro(initialTime, itemIndex)
   }
 
   private fun startTimer(
@@ -110,10 +108,10 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
   }
 
   fun onDismiss() {
-    taskCompleted.value = false
     val updatedTaskList = pomodoroListScreenState.value.toMutableList()
     val taskIndex = updatedTaskList.indexOf(completedTask.value)
-    val lastIndex = updatedTaskList.withIndex().lastOrNull { it.index != taskIndex && it.value.progress != 100f }?.index
+    val lastIndex = updatedTaskList.withIndex()
+      .lastOrNull { it.index != taskIndex && it.value.progress != 100f }?.index
     if (lastIndex != null) {
       val completedTask = updatedTaskList.removeAt(taskIndex)
       updatedTaskList.add(lastIndex, completedTask)
@@ -121,6 +119,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
       startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime, 0)
     }
     pomodoroListScreenState.value = updatedTaskList
+    taskCompleted.value = false
   }
 
   private fun calculateProgress(
@@ -144,8 +143,6 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
   private fun convertPomodoroToSeconds(pomodoroNumber: Int): Int {
     return 25 * pomodoroNumber * 60
   }
-
-
 
   private fun getPomodoroDescription(pomodoroNumber: Int): String {
     val totalMinutes = pomodoroNumber * 25

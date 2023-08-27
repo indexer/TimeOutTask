@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -206,12 +207,13 @@ private fun PomodoroDetailsColumn(item: PomodoroTask) {
     Text(
       text = item.title,
       modifier = Modifier.fillMaxWidth(),
-      fontSize = 20.sp
+      style = MaterialTheme.typography.subtitle2,
+      color = Color.DarkGray
     )
     Text(
       text = item.description,
       modifier = Modifier.fillMaxWidth(),
-      fontSize = 13.sp
+      style = MaterialTheme.typography.caption,
     )
   }
 }
