@@ -1,6 +1,9 @@
 # TimeOutTask
 Personal Project to Try Toml &amp; Compose
 
+# Video
+[![Watch the video]([https://img.youtube.com/vi/T-D1KVIuvjA/maxresdefault.jpg](https://vimeo.com/858312338?share=copy))]([https://youtu.be/T-D1KVIuvjA](https://vimeo.com/858312338?share=copy))
+
 ## What is TOML?
 TOML is a configuration file format that aims to strike a balance between being easy to read and write for humans and easy to parse for machines. Tom Preston-Werner, the co-founder of GitHub, created it.
 TOML is characterized by its simplicity and readability. It uses key-value pairs and is inspired by INI files but with additional features and improvements. It has a minimalistic syntax that makes it easy to understand and maintain.
