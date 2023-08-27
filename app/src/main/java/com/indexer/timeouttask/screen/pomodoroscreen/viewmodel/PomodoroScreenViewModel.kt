@@ -36,7 +36,9 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     fromIndex: Int,
     toIndex: Int
   ) {
-    startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime,0)
+    if (pomodoroListScreenState.value[0].alarmTimerState.isActive) {
+      startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime, 0)
+    }
     // Reset progress and restart timer for the swapped items
     if (pomodoroListScreenState.value[fromIndex].alarmTimerState.isActive
       && pomodoroListScreenState.value[fromIndex].progress != 100f
@@ -54,7 +56,6 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
 
   private fun resetProgressAndRestartTimer(itemIndex: Int) {
     pomodoroListScreenState.value[itemIndex].progress = 0f
-
     setTimePomodoro(
       pomodoroListScreenState.value[itemIndex].alarmTimerState.elapsedTime.toInt(), itemIndex
     )
@@ -92,13 +93,21 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     val remainingTaskTime = initialTaskTime - currentElapsedTime
     val taskProgress = calculateProgress(remainingTaskTime, initialTaskTime)
     updatedTaskList[taskIndex] = updatedTaskList[taskIndex].copy(progress = taskProgress)
-    if (taskProgress == 100f && !isLastTaskCompleted()) {
-      moveCompletedTaskToLast(taskIndex, updatedTaskList)
-      pomodoroListScreenState.value[0].alarmTimerState.isActive = true
-      startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime, 0)
+
+    if (taskProgress == 100f) {
+      val lastIndex = updatedTaskList.withIndex().lastOrNull { it.index != taskIndex && it.value.progress != 100f }?.index
+      if (lastIndex != null) {
+        val completedTask = updatedTaskList.removeAt(taskIndex)
+        updatedTaskList.add(lastIndex, completedTask)
+        pomodoroListScreenState.value[0].alarmTimerState.isActive = true
+        startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime, 0)
+      }
     }
     pomodoroListScreenState.value = updatedTaskList
   }
+
+
+
 
   private fun calculateProgress(
     remainingTime: Long,
@@ -112,7 +121,6 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     pomodoroNumber: Int,
     itemIndex: Int
   ) {
-    Log.e("data setTimePomodoro", "setTimePomodoro"+ itemIndex)
     timeState.value.elapsedTime = 1 * 60 * 1000L // 2 minutes in milliseconds
     if (pomodoroListScreenState.value[0].alarmTimerState.isActive && itemIndex == 0) {
       startTimer(timeState.value.elapsedTime, itemIndex)
@@ -123,17 +131,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     return 25 * pomodoroNumber * 60
   }
 
-  private fun isLastTaskCompleted(): Boolean {
-    return pomodoroListScreenState.value.lastOrNull()?.progress == 100f
-  }
 
-  private fun moveCompletedTaskToLast(
-    completedTaskIndex: Int,
-    updateList: MutableList<PomodoroTask>
-  ) {
-    val completedTask = updateList.removeAt(completedTaskIndex)
-    updateList.add(completedTask)
-  }
 
   private fun getPomodoroDescription(pomodoroNumber: Int): String {
     val totalMinutes = pomodoroNumber * 25
@@ -152,7 +150,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     if (updatedPomodoroList.isNotEmpty() && updatedPomodoroList[0].progress == 100f) {
       newPomodoro.alarmTimerState.isActive = true
       updatedPomodoroList.add(0, newPomodoro)
-      startTimer(newPomodoro.alarmTimerState.elapsedTime,0)
+      startTimer(newPomodoro.alarmTimerState.elapsedTime, 0)
     } else {
       if (updatedPomodoroList.isNotEmpty() && updatedPomodoroList[updatedPomodoroList.size - 1].progress == 100f) {
         updatedPomodoroList.add(updatedPomodoroList.size - 1, newPomodoro)
