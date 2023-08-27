@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroAddScreen
+import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroCompleteScreen
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroListScreen
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.AlarmTimerState
 import com.indexer.timeouttask.screen.pomodoroscreen.viewmodel.PomodoroScreenViewModel
@@ -16,14 +17,21 @@ fun PomodoroScreen() {
     val viewModel: PomodoroScreenViewModel = koinViewModel()
     val processIntentWithCurrentValue = viewModel.provideProcessIntent()
     val onMoveItem = viewModel.getSwapFunction()
+    val onDismiss = viewModel::onDismiss
 
     val state = viewModel.pomodoroScreenStateState.collectAsState()
     val pomodoroList = viewModel.pomodoroList.collectAsState()
+    val showCongratulationsScreen = viewModel.showCongratulationsScreen.collectAsState()
 
-    PomodoroAddScreen(
-      processIntentWithCurrentValue, state.value.pomodoroDurationInMinutes, state.value.pomodoroTitle
-    )
-    PomodoroList(list = pomodoroList.value.toMutableList(), onMoveItem)
+    if (!showCongratulationsScreen.value) {
+      PomodoroAddScreen(
+        processIntentWithCurrentValue, state.value.pomodoroDurationInMinutes,
+        state.value.pomodoroTitle
+      )
+      PomodoroList(list = pomodoroList.value.toMutableList(), onMoveItem)
+    } else {
+      PomodoroCompleteScreen (onDismiss)
+    }
   }
 }
 

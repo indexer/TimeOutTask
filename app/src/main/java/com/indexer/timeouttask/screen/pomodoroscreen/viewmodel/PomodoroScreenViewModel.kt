@@ -22,6 +22,13 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
   private val pomodoroListScreenState = MutableStateFlow(emptyList<PomodoroTask>())
   val pomodoroList: StateFlow<List<PomodoroTask>> = pomodoroListScreenState
 
+  private val taskCompleted = MutableStateFlow(false)
+  val showCongratulationsScreen: StateFlow<Boolean> = taskCompleted
+
+  private val completedTask = MutableStateFlow<PomodoroTask?>(null)
+
+
+
   private var currentTimer: CountDownTimer? = null
 
   fun provideProcessIntent(): (PomodoroScreenIntent) -> Unit {
@@ -31,6 +38,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
   fun getSwapFunction(): (Int, Int) -> Unit {
     return { index1, index2 -> swapPomodoroItems(index1, index2) }
   }
+
 
   private fun swapPomodoroItems(
     fromIndex: Int,
@@ -95,19 +103,25 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     updatedTaskList[taskIndex] = updatedTaskList[taskIndex].copy(progress = taskProgress)
 
     if (taskProgress == 100f) {
-      val lastIndex = updatedTaskList.withIndex().lastOrNull { it.index != taskIndex && it.value.progress != 100f }?.index
-      if (lastIndex != null) {
-        val completedTask = updatedTaskList.removeAt(taskIndex)
-        updatedTaskList.add(lastIndex, completedTask)
-        pomodoroListScreenState.value[0].alarmTimerState.isActive = true
-        startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime, 0)
-      }
+      completedTask.value = updatedTaskList[taskIndex]
+      taskCompleted.value = true
     }
     pomodoroListScreenState.value = updatedTaskList
   }
 
-
-
+  fun onDismiss() {
+    taskCompleted.value = false
+    val updatedTaskList = pomodoroListScreenState.value.toMutableList()
+    val taskIndex = updatedTaskList.indexOf(completedTask.value)
+    val lastIndex = updatedTaskList.withIndex().lastOrNull { it.index != taskIndex && it.value.progress != 100f }?.index
+    if (lastIndex != null) {
+      val completedTask = updatedTaskList.removeAt(taskIndex)
+      updatedTaskList.add(lastIndex, completedTask)
+      pomodoroListScreenState.value[0].alarmTimerState.isActive = true
+      startTimer(pomodoroListScreenState.value[0].alarmTimerState.elapsedTime, 0)
+    }
+    pomodoroListScreenState.value = updatedTaskList
+  }
 
   private fun calculateProgress(
     remainingTime: Long,
