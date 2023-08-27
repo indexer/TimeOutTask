@@ -104,7 +104,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
 
     if (taskProgress == 100f) {
       completedTask.value = updatedTaskList[taskIndex]
-      taskCompleted.value = true
+      taskCompleted.value = pomodoroListScreenState.value.any { it.progress != 100f }
     }
     pomodoroListScreenState.value = updatedTaskList
   }
