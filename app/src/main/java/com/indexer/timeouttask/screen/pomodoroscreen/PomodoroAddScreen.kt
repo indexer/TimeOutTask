@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.indexer.timeouttask.R
@@ -90,9 +92,11 @@ private fun PomodoroTitleInput(
     onImeActionPerformed = { _: ImeAction ->
     })
   Text(
-    stringResource(id = R.string.estimate_pomodoro), Modifier.padding(
-    Dimensions.spacing.small, Dimensions.spacing.medium, 0.dp, Dimensions.spacing.small
-  )
+    stringResource(id = R.string.estimate_pomodoro),
+    Modifier.padding(
+      Dimensions.spacing.small, Dimensions.spacing.medium,
+      0.dp, Dimensions.spacing.small
+    ), style = MaterialTheme.typography.h6, fontWeight = FontWeight.Normal
   )
 }
 
@@ -123,7 +127,11 @@ private fun DisplayTotalTime(currentValue: Int) {
   } else {
     "Total Time: $minutes min"
   }
-  Text(timeText, Modifier.padding(Dimensions.spacing.medium))
+  Text(
+    timeText, Modifier.padding(Dimensions.spacing.medium),
+    style = MaterialTheme.typography.body1,
+    fontWeight = FontWeight.SemiBold
+  )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

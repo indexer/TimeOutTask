@@ -1,7 +1,13 @@
 package com.indexer.timeouttask.screen.mainscreen
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroAddScreen
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroCompleteScreen
@@ -17,12 +23,19 @@ fun PomodoroScreen() {
     val viewModel: PomodoroScreenViewModel = koinViewModel()
     val processIntentWithCurrentValue = viewModel.provideProcessIntent()
     val onMoveItem = viewModel.getSwapFunction()
-    val onDismiss = viewModel::onDismiss
 
     val state = viewModel.pomodoroScreenStateState.collectAsState()
     val pomodoroList = viewModel.pomodoroList.collectAsState()
     val showCongratulationsScreen = viewModel.showCongratulationsScreen.collectAsState()
-
+    TopAppBar(
+      title = {
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.Center
+        ) {
+          Text(text = "Pomodoro") // Replace with your desired title text
+        }
+      })
     if (!showCongratulationsScreen.value) {
       PomodoroAddScreen(
         processIntentWithCurrentValue, state.value.pomodoroDurationInMinutes,
@@ -30,7 +43,7 @@ fun PomodoroScreen() {
       )
       PomodoroList(list = pomodoroList.value.toMutableList(), onMoveItem)
     } else {
-      PomodoroCompleteScreen (onDismiss)
+      PomodoroCompleteScreen(processIntentWithCurrentValue)
     }
   }
 }

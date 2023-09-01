@@ -78,6 +78,7 @@ tasks.register("generateStringsXml") {
 dependencies {
   implementation(libs.androidx.ktx)
   implementation(libs.androidx.life.cycle)
+  implementation("androidx.compose.ui:ui-text-google-fonts:1.4.3")
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.core.espresso)
   implementation(libs.androidx.test.junit)
@@ -87,6 +88,9 @@ dependencies {
   implementation(libs.androidx.compose.material)
   implementation(libs.androidx.activity.compose)
   debugImplementation(libs.androidx.compose.ui.tooling)
+
+  implementation ("com.google.android.material:material:1.9.0")
+
 
   implementation(project(":common"))
 }

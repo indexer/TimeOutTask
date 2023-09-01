@@ -23,6 +23,7 @@ androidx-compose-material = { module = "androidx.compose.material:material", ver
 androidx-compose-ui-tooling={module="androidx.compose.ui:ui-tooling",version.ref="composeUiVersion",name = "androidx-compose-ui-tooling"}
 androidx-compose-ui-foundation ={module= "androidx.compose.foundation:foundation-layout",version.ref="composeUiVersion",name="androidx.compose.foundation:foundation-layout"}
 
+#Font
 #DI
 koin-android = {module ="io.insert-koin:koin-androidx-compose",version.ref="koinVersion",name="koin"}
 #koin-android-viewmodel ={module = "org.koin:koin-androidx-viewmodel",version.ref="koinVersion",name="koin"}

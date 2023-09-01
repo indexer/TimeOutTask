@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -30,13 +32,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.indexer.timeouttask.R
 import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
 import com.indexer.timeouttask.ui.theme.Purple200
+import com.indexer.timeouttask.ui.theme.Purple700
 import com.indexer.timeouttask.ui.theme.circularIndicatorBackgroundColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -102,10 +114,12 @@ private fun PomodoroListItem(
   displacementOffset: Float?,
 ) {
   val isBeingDragged = displacementOffset != null
-  val backgroundColor = if (isBeingDragged) {
+  val backgroundColor : Color = if (isBeingDragged) {
     Color.LightGray
   } else {
-    Color.White
+    val hexColor = "#9297FF"
+    val parsedColor = Color(android.graphics.Color.parseColor(hexColor))
+    parsedColor
   }
 
   Column(
@@ -131,25 +145,46 @@ private fun PomodoroProgressCard(
 ) {
 
   Card(
-    shape = RoundedCornerShape(8.dp),
+    shape = RoundedCornerShape(16.dp),
     backgroundColor = backgroundColor,
     modifier = Modifier
       .fillMaxWidth()
-      .padding(8.dp)
+      .padding(4.dp)
   ) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically
-    ) {
-      if (item.progress < 100f) {
-        PomodoroProgressBox(item.progress)
-      } else {
-        PomodoroCompletionBox()
+
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        if (item.progress < 100f) {
+          PomodoroProgressBox(item.progress)
+        } else {
+          PomodoroCompletionBox()
+        }
+        PomodoroDetailsColumn(item)
+
+        val watermarkText = AnnotatedString.Builder()
+          .apply {
+            withStyle(
+              style = SpanStyle(
+                color = Color.White.copy(alpha = 0.2f), // Adjust alpha here
+                fontFamily = FontFamily.SansSerif,
+                fontSize = 40.sp,
+                letterSpacing = 0.1.sp
+              )
+            ) {
+              append("1/2")
+            }
+          }.toAnnotatedString()
+
+        Text(
+          text = watermarkText,
+          modifier = Modifier.fillMaxSize().padding(16.dp),
+          textAlign = TextAlign.End
+        )
       }
-      PomodoroDetailsColumn(item)
     }
-  }
 }
 
 @Composable
@@ -157,25 +192,28 @@ private fun PomodoroProgressBox(progressValue: Float) {
   Box(
     modifier = Modifier
       .padding(8.dp)
-      .size(60.dp)
+      .size(80.dp)
       .background(
-        circularIndicatorBackgroundColor,
+        Color.White,
         shape = CircleShape
       ),
     contentAlignment = Alignment.Center
   ) {
     CircularProgressIndicator(
       progress = progressValue / 100,
-      modifier = Modifier.size(60.dp),
-      backgroundColor = circularIndicatorBackgroundColor,
+      modifier = Modifier.size(80.dp),
+      backgroundColor = Color.Transparent,
       color = Purple200,
       strokeWidth = 8.dp
     )
+
     Text(
       text = "${progressValue.toInt()}%",
-      fontSize = 13.sp,
+      fontSize = 16.sp,
+      style = MaterialTheme.typography.h3,
+      fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Bold,
-      color = Color.Black
+      color = Color.DarkGray
     )
   }
 }
@@ -186,13 +224,13 @@ private fun PomodoroCompletionBox() {
     modifier = Modifier
       .padding(8.dp)
       .size(60.dp)
-      .background(Purple200, shape = CircleShape),
+      .background(Color.White, shape = CircleShape),
     contentAlignment = Alignment.Center
   ) {
     Icon(
       imageVector = Icons.Default.Check,
       contentDescription = null,
-      tint = Color.White,
+      tint = Purple700,
       modifier = Modifier.size(32.dp)
     )
   }
@@ -206,14 +244,20 @@ private fun PomodoroDetailsColumn(item: PomodoroTask) {
   ) {
     Text(
       text = item.title,
-      modifier = Modifier.fillMaxWidth(),
-      style = MaterialTheme.typography.subtitle2,
-      color = Color.DarkGray
+      modifier = Modifier.wrapContentWidth(),
+      style = MaterialTheme.typography.body1,
+      fontFamily = FontFamily.SansSerif,
+      fontSize = 24.sp,
+      color = Color.White,
+      fontWeight = FontWeight.Bold
     )
     Text(
       text = item.description,
-      modifier = Modifier.fillMaxWidth(),
-      style = MaterialTheme.typography.caption,
+      modifier = Modifier.wrapContentWidth(),
+      fontFamily= FontFamily.SansSerif,
+      fontSize = 18.sp,
+      style = MaterialTheme.typography.caption, color = Color.White,
+      fontWeight = FontWeight.Bold
     )
   }
 }

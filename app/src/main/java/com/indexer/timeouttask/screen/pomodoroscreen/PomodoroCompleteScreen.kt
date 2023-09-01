@@ -14,12 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.indexer.timeouttask.commonbutton.CommonOutlineButton
+import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
+import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.DismissCompletedTask
 import com.indexer.timeouttask.ui.theme.Dimensions
 import com.indexer.timeouttask.ui.theme.Purple200
 
 @Composable
 fun PomodoroCompleteScreen(
-  onDismiss: () -> Unit,
+  processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit,
 ) {
   Column(
     modifier = Modifier
@@ -43,7 +45,7 @@ fun PomodoroCompleteScreen(
     CommonOutlineButton(
       modifier = Modifier.padding(Dimensions.spacing.small),
       text = "Let Go Next!",
-      onClick = { onDismiss() },
+      onClick = { processIntentWithCurrentValue(DismissCompletedTask) },
       buttonColor = Purple200,
       textColor = Color.White
     )
