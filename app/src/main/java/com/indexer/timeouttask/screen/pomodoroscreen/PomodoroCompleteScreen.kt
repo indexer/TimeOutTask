@@ -1,5 +1,6 @@
 package com.indexer.timeouttask.screen.pomodoroscreen
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.indexer.timeouttask.R
 import com.indexer.timeouttask.commonbutton.CommonOutlineButton
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.DismissCompletedTask
@@ -23,6 +26,10 @@ import com.indexer.timeouttask.ui.theme.Purple200
 fun PomodoroCompleteScreen(
   processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit,
 ) {
+  val mContext = LocalContext.current
+
+  val mMediaPlayer = MediaPlayer.create(mContext, R.raw.task_complete)
+  mMediaPlayer.start()
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -45,7 +52,9 @@ fun PomodoroCompleteScreen(
     CommonOutlineButton(
       modifier = Modifier.padding(Dimensions.spacing.small),
       text = "Let Go Next!",
-      onClick = { processIntentWithCurrentValue(DismissCompletedTask) },
+      onClick = {
+        mMediaPlayer.stop()
+        processIntentWithCurrentValue(DismissCompletedTask) },
       buttonColor = Purple200,
       textColor = Color.White
     )

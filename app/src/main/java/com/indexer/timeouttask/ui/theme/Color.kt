@@ -2,10 +2,8 @@ package com.indexer.timeouttask.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
-val TextFieldBackgroundColor =Color(239, 238, 238, 100)
-val rowBackgroundColor =Color(239, 238, 238, 98)
-val circularIndicatorBackgroundColor =Color(239, 238, 238, 100)
+val Purple200 = Color(0xFF274CC8)
+val Purple500 = Color(0xFF274CC8)
+val Purple700 = Color(0xFF274CC8)
+val CircularIndicatorBackgroundColor =Color(39, 76, 200, 70)
+val rowBackgroundColor =Color(239, 238, 238, 70)

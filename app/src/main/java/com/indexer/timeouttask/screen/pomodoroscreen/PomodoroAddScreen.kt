@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -130,6 +131,7 @@ private fun DisplayTotalTime(currentValue: Int) {
   Text(
     timeText, Modifier.padding(Dimensions.spacing.medium),
     style = MaterialTheme.typography.body1,
+    fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.SemiBold
   )
 }
@@ -138,7 +140,6 @@ private fun DisplayTotalTime(currentValue: Int) {
 @Composable
 private fun MakeItButton(processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit) {
   val keyboardController = LocalSoftwareKeyboardController.current
-
   CommonOutlineButton(
     modifier = Modifier.padding(Dimensions.spacing.small),
     text = "Make It !",

@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="btnGotIt">Got It</string>
-    <string name="btnOk">OK</string>
-    <string name="btnYes">Yes</string>
-    <string name="btnNo">No</string>
-    <string name="title">Time Out Task</string>
-    <string name="toolbar_title">Time Out Task</string>
-    <string name="morning_greeting">Good Morning, %s</string>
     <string name="title_text">What you want to do</string>
     <string name="app_name">Take Out Time</string>
+    <string name="app_title">Pomodoro</string>
     <string name="estimate_pomodoro">Estimate Pomodoro:</string>
+    <string name="create_new_task">"Create your Task And Make Completed"</string>
 </resources>
