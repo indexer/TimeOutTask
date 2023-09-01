@@ -1,14 +1,16 @@
 package com.indexer.timeouttask.screen.pomodoroscreen
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,28 +33,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.indexer.timeouttask.R
 import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
-import com.indexer.timeouttask.ui.theme.Purple200
+import com.indexer.timeouttask.ui.theme.CircularIndicatorBackgroundColor
 import com.indexer.timeouttask.ui.theme.Purple700
-import com.indexer.timeouttask.ui.theme.circularIndicatorBackgroundColor
+import com.indexer.timeouttask.ui.theme.rowBackgroundColor
+import com.indexer.timeouttask.ui.utils.ColorGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
+import kotlin.random.Random
 
 @Composable fun PomodoroListScreen(
   items: List<PomodoroTask>,
@@ -73,6 +76,7 @@ import kotlinx.coroutines.launch
       } else {
         null
       }
+      //val randomBackgroundColor = remember { Color(ColorGenerator().getRandomColor()) }
       PomodoroListItem(item, displacementOffset)
     }
   }
@@ -114,12 +118,10 @@ private fun PomodoroListItem(
   displacementOffset: Float?,
 ) {
   val isBeingDragged = displacementOffset != null
-  val backgroundColor : Color = if (isBeingDragged) {
+  val backgroundColor: Color = if (isBeingDragged) {
     Color.LightGray
-  } else {
-    val hexColor = "#9297FF"
-    val parsedColor = Color(android.graphics.Color.parseColor(hexColor))
-    parsedColor
+  } else{
+    Color(item.backgroundColor ?:0)
   }
 
   Column(
@@ -130,7 +132,7 @@ private fun PomodoroListItem(
       .fillMaxHeight()
   ) {
     Column(
-      modifier = Modifier.padding(start = 8.dp, 0.dp, 8.dp, 8.dp),
+      modifier = Modifier.padding(8.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
       PomodoroProgressCard(item, backgroundColor)
@@ -143,48 +145,53 @@ private fun PomodoroProgressCard(
   item: PomodoroTask,
   backgroundColor: Color,
 ) {
-
   Card(
     shape = RoundedCornerShape(16.dp),
     backgroundColor = backgroundColor,
     modifier = Modifier
-      .fillMaxWidth()
-      .padding(4.dp)
-  ) {
+      .fillMaxWidth()) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      if (item.progress < 100f) {
+        PomodoroProgressBox(item.progress)
+      } else {
+        PomodoroCompletionBox()
+      }
 
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
+      // Wrap the details and watermark in a Column
+      Column(
+        modifier = Modifier
+          .weight(1f) // Expand to take available space
+          .padding(8.dp)
       ) {
-        if (item.progress < 100f) {
-          PomodoroProgressBox(item.progress)
-        } else {
-          PomodoroCompletionBox()
-        }
         PomodoroDetailsColumn(item)
+        // Use a Spacer to push the watermark to the end
+        Spacer(modifier = Modifier.weight(1f))
 
         val watermarkText = AnnotatedString.Builder()
           .apply {
             withStyle(
               style = SpanStyle(
-                color = Color.White.copy(alpha = 0.2f), // Adjust alpha here
+                color = Color.White.copy(alpha = 0.6f),
                 fontFamily = FontFamily.SansSerif,
-                fontSize = 40.sp,
+                fontSize = 14.sp,
                 letterSpacing = 0.1.sp
               )
             ) {
-              append("1/2")
+              append("${item.progress.toInt()}%")
             }
           }.toAnnotatedString()
 
         Text(
-          text = watermarkText,
-          modifier = Modifier.fillMaxSize().padding(16.dp),
-          textAlign = TextAlign.End
+          modifier = Modifier
+            .padding(8.dp),
+          text = watermarkText, textAlign = TextAlign.End
         )
       }
     }
+  }
 }
 
 @Composable
@@ -193,27 +200,23 @@ private fun PomodoroProgressBox(progressValue: Float) {
     modifier = Modifier
       .padding(8.dp)
       .size(80.dp)
-      .background(
-        Color.White,
-        shape = CircleShape
-      ),
+      .background(CircularIndicatorBackgroundColor, shape = CircleShape),
     contentAlignment = Alignment.Center
   ) {
     CircularProgressIndicator(
       progress = progressValue / 100,
       modifier = Modifier.size(80.dp),
-      backgroundColor = Color.Transparent,
-      color = Purple200,
+      backgroundColor = rowBackgroundColor,
+      color = Color.White,
       strokeWidth = 8.dp
     )
-
     Text(
       text = "${progressValue.toInt()}%",
-      fontSize = 16.sp,
+      fontSize = 20.sp,
       style = MaterialTheme.typography.h3,
       fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Bold,
-      color = Color.DarkGray
+      color = Color.White
     )
   }
 }
@@ -223,14 +226,13 @@ private fun PomodoroCompletionBox() {
   Box(
     modifier = Modifier
       .padding(8.dp)
-      .size(60.dp)
-      .background(Color.White, shape = CircleShape),
-    contentAlignment = Alignment.Center
+      .size(80.dp)
+      .background(Color.Transparent, shape = CircleShape), contentAlignment = Alignment.Center
   ) {
     Icon(
       imageVector = Icons.Default.Check,
       contentDescription = null,
-      tint = Purple700,
+      tint = Color.White,
       modifier = Modifier.size(32.dp)
     )
   }
@@ -239,24 +241,26 @@ private fun PomodoroCompletionBox() {
 @Composable
 private fun PomodoroDetailsColumn(item: PomodoroTask) {
   Column(
-    modifier = Modifier.padding(start = 8.dp, 0.dp, 8.dp, 8.dp),
+    modifier = Modifier
+      .padding(start = 8.dp, 0.dp, 8.dp, 8.dp)
+      .wrapContentWidth(),
     verticalArrangement = Arrangement.spacedBy(8.dp)
   ) {
     Text(
-      text = item.title,
-      modifier = Modifier.wrapContentWidth(),
-      style = MaterialTheme.typography.body1,
-      fontFamily = FontFamily.SansSerif,
-      fontSize = 24.sp,
-      color = Color.White,
-      fontWeight = FontWeight.Bold
-    )
-    Text(
       text = item.description,
       modifier = Modifier.wrapContentWidth(),
-      fontFamily= FontFamily.SansSerif,
+      style = MaterialTheme.typography.caption,
+      fontFamily = FontFamily.SansSerif,
+      fontSize = 16.sp,
+      color = Color.White,
+      fontWeight = FontWeight.SemiBold
+    )
+    Text(
+      text = item.title,
+      modifier = Modifier.wrapContentWidth(),
+      fontFamily = FontFamily.SansSerif,
       fontSize = 18.sp,
-      style = MaterialTheme.typography.caption, color = Color.White,
+      style = MaterialTheme.typography.h6, color = Color.White,
       fontWeight = FontWeight.Bold
     )
   }
