@@ -14,7 +14,7 @@ import com.indexer.timeouttask.screen.pomodoroscreen.swap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class PomodoroScreenViewModel(context : Context,private val useCase: PomodoroScreenUseCase) : ViewModel() {
+class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : ViewModel() {
 
   private val pomodoroScreenState = MutableStateFlow(PomodoroScreenState())
   val pomodoroScreenStateState: StateFlow<PomodoroScreenState> = pomodoroScreenState
@@ -69,6 +69,7 @@ class PomodoroScreenViewModel(context : Context,private val useCase: PomodoroScr
   }
 
   private fun resetProgressAndRestartTimer(itemIndex: Int) {
+    if (pomodoroListScreenState.value[itemIndex].progress != 100f)
     pomodoroListScreenState.value[itemIndex].progress = 0f
     val initialTimeMillis =
       pomodoroListScreenState.value[itemIndex].alarmTimerState.elapsedTime.toInt()

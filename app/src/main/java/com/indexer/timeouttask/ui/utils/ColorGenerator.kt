@@ -11,6 +11,7 @@ class ColorGenerator {
 
   private val usedColors = mutableSetOf<Int>()
 
+  @Synchronized
   fun getRandomColor(): Int {
     if (usedColors.size == colors.size) {
       // All colors have been used, reset the used colors set
