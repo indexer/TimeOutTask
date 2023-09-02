@@ -90,7 +90,7 @@ dependencies {
   debugImplementation(libs.androidx.compose.ui.tooling)
 
   implementation ("com.google.android.material:material:1.9.0")
-
+  implementation ("androidx.compose.animation:animation:1.5.0")
 
   implementation(project(":common"))
 }
