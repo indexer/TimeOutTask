@@ -32,7 +32,7 @@ object Dimensions {
   val spacing = Spacing(
     small = 8.dp,
     medium = 16.dp,
-    large = 24.dp
+    large = 32.dp
   )
 
   val roundedCorner = RounderCornerSize(

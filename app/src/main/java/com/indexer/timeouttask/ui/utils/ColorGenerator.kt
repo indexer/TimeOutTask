@@ -15,14 +15,15 @@ class ColorGenerator {
   fun getRandomColor(): Int {
     if (usedColors.size == colors.size) {
       // All colors have been used, reset the used colors set
+      colors.reverse()
       usedColors.clear()
     }
     var color: Int
     do {
       color = colors.random()
     } while (color in usedColors)
-
     usedColors.add(color)
     return color
   }
 }
+

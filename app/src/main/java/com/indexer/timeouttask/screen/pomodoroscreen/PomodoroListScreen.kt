@@ -24,6 +24,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,9 @@ import com.indexer.timeouttask.ui.theme.rowBackgroundColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable fun PomodoroListScreen(
   items: List<PomodoroTask>,
@@ -154,35 +158,46 @@ private fun PomodoroProgressCard(
       Column(
         modifier = Modifier
           .weight(1f) // Expand to take available space
-          .padding(8.dp)
+          .padding(4.dp)
       ) {
         PomodoroDetailsColumn(item)
         // Use a Spacer to push the watermark to the end
-        Spacer(modifier = Modifier.weight(1f))
-
         val watermarkText = AnnotatedString.Builder()
           .apply {
             withStyle(
               style = SpanStyle(
-                color = Color.White.copy(alpha = 0.6f),
+                color = Color.White,
                 fontFamily = FontFamily.SansSerif,
                 fontSize = 14.sp,
                 letterSpacing = 0.1.sp
               )
             ) {
-              append("${item.progress.toInt()}%")
+              append(item.date)
             }
           }.toAnnotatedString()
-
-        Text(
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
           modifier = Modifier
-            .padding(8.dp),
-          text = watermarkText, textAlign = TextAlign.End
-        )
+            .padding(8.dp)
+        ) {
+          Icon(
+            imageVector = Icons.Default.DateRange,
+            contentDescription = null, // Set a proper content description
+            tint = Color.White,
+            modifier = Modifier.size(24.dp)
+          )
+          Text(
+            modifier = Modifier
+              .padding(8.dp),
+            text = watermarkText, textAlign = TextAlign.End
+          )
+        }
       }
     }
   }
 }
+
+
 
 @Composable
 private fun PomodoroProgressBox(progressValue: Float) {
@@ -248,8 +263,8 @@ private fun PomodoroDetailsColumn(item: PomodoroTask) {
       modifier = Modifier.wrapContentWidth(),
       fontFamily = FontFamily.SansSerif,
       fontSize = 13.sp,
-      style = MaterialTheme.typography.h6, color = Color.White,
-      fontWeight = FontWeight.Light
+      style = MaterialTheme.typography.subtitle1, color = Color.White,
+      fontWeight = FontWeight.Normal
     )
   }
 }

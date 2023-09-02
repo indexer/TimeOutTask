@@ -14,48 +14,47 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.indexer.timeouttask.R
+import com.indexer.timeouttask.R.string
 import com.indexer.timeouttask.commonbutton.CommonOutlineButton
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.DismissCompletedTask
 import com.indexer.timeouttask.ui.theme.Dimensions
-import com.indexer.timeouttask.ui.theme.Purple200
+import com.indexer.timeouttask.ui.theme.Blue200
 
 @Composable
-fun PomodoroCompleteScreen(
-  processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit,
-) {
+fun PomodoroCompleteScreen(processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit) {
   val mContext = LocalContext.current
-
   val mMediaPlayer = MediaPlayer.create(mContext, R.raw.task_complete)
   mMediaPlayer.start()
   Column(
     modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp),
+      .fillMaxSize().padding(Dimensions.spacing.medium),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center
   ) {
     Text(
-      text = "Congratulations!",
+      text = stringResource(id = string.congratulation_title),
       style = MaterialTheme.typography.h4,
-      color = Purple200
+      color = Blue200
     )
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(Dimensions.spacing.medium))
     Text(
-      text = "Congratulations, you've completed the task!",
+      text = stringResource(id = string.congratulation_description),
       style = MaterialTheme.typography.body1,
       color = Color.Black
     )
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(modifier = Modifier.height(Dimensions.spacing.large))
     CommonOutlineButton(
       modifier = Modifier.padding(Dimensions.spacing.small),
-      text = "Let Go Next!",
+      text = stringResource(id = string.let_go_next),
       onClick = {
         mMediaPlayer.stop()
-        processIntentWithCurrentValue(DismissCompletedTask) },
-      buttonColor = Purple200,
+        processIntentWithCurrentValue(DismissCompletedTask)
+      },
+      buttonColor = Blue200,
       textColor = Color.White
     )
   }

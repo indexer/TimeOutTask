@@ -41,9 +41,8 @@ import com.indexer.timeouttask.screen.pomodoroscreen.domain.AlarmTimerState
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenState
 import com.indexer.timeouttask.screen.pomodoroscreen.viewmodel.PomodoroScreenViewModel
-import com.indexer.timeouttask.ui.theme.Purple700
+import com.indexer.timeouttask.ui.theme.Blue700
 import com.indexer.timeouttask.ui.theme.TimeOutTaskTheme
-import com.indexer.timeouttask.ui.utils.ColorGenerator
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -150,8 +149,7 @@ data class PomodoroTask(
   var description: String,
   val alarmTimerState: AlarmTimerState,
   var progress: Float,
-  var backgroundColor: Int? = ColorGenerator().getRandomColor()
-)
+  var backgroundColor: Int,var date : String)
 
 @Composable
 fun NewTaskButton(onTaskAdded: () -> Unit) {
@@ -165,7 +163,7 @@ fun NewTaskButton(onTaskAdded: () -> Unit) {
       .fillMaxWidth()
       .size(56.dp)
       .drawBehind {
-        drawRoundRect(color = Purple700, style = stroke)
+        drawRoundRect(color = Blue700, style = stroke)
       }
       .clickable {
         onTaskAdded()

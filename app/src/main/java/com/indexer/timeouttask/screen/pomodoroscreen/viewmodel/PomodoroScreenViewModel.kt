@@ -1,18 +1,19 @@
 package com.indexer.timeouttask.screen.pomodoroscreen.viewmodel
 
-import android.content.Context
-import android.media.MediaPlayer
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
-import com.indexer.timeouttask.R
 import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.AlarmTimerState
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenState
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenUseCase
 import com.indexer.timeouttask.screen.pomodoroscreen.swap
+import com.indexer.timeouttask.ui.utils.ColorGenerator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : ViewModel() {
 
@@ -36,7 +37,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
 
   private val pomodoroDurationMinutes = 25
   private val durationInMilliseconds =pomodoroDurationMinutes * 60 * 1000L
-
+  private val colorGenerator = ColorGenerator()
 
   init {
     setTimePomodoro(pomodoroDurationMinutes, 0)
@@ -69,11 +70,12 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
   }
 
   private fun resetProgressAndRestartTimer(itemIndex: Int) {
-    if (pomodoroListScreenState.value[itemIndex].progress != 100f)
-    pomodoroListScreenState.value[itemIndex].progress = 0f
-    val initialTimeMillis =
-      pomodoroListScreenState.value[itemIndex].alarmTimerState.elapsedTime.toInt()
-    setTimePomodoro(initialTimeMillis, itemIndex)
+    if (pomodoroListScreenState.value[itemIndex].progress != 100f) {
+      pomodoroListScreenState.value[itemIndex].progress = 0f
+      val initialTimeMillis =
+        pomodoroListScreenState.value[itemIndex].alarmTimerState.elapsedTime.toInt()
+      setTimePomodoro(initialTimeMillis, itemIndex)
+    }
   }
 
   private fun startTimer(
@@ -227,10 +229,17 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     updatedTaskList[taskIndex] = updatedTaskList[taskIndex].copy(progress = taskProgress)
 
     if (taskProgress == 100f) {
+      updatedTaskList[taskIndex].date = getCurrentDateTime()
       completedTask.value = updatedTaskList[taskIndex]
       taskCompleted.value = pomodoroListScreenState.value.any { it.progress != 100f }
     }
     pomodoroListScreenState.value = updatedTaskList
+  }
+
+  private fun getCurrentDateTime(): String {
+    val dateFormat = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault())
+    val currentDate = Date()
+    return dateFormat.format(currentDate)
   }
 
   private fun createPomodoroTask(pomodoroScreenState: PomodoroScreenState): PomodoroTask {
@@ -241,7 +250,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
         1 * 60 * 1000L,
         /*convertPomodoroToMilliseconds(pomodoroScreenState.pomodoroDurationInMinutes)*/
         pomodoroListScreenState.value.isEmpty()
-      ), 0f
+      ), 0f,colorGenerator.getRandomColor(),getCurrentDateTime()
     )
   }
 }

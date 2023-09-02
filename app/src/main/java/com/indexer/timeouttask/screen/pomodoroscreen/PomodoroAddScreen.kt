@@ -37,7 +37,7 @@ import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.UpdatePomodoroTitle
 import com.indexer.timeouttask.textfield.CommonTextField
 import com.indexer.timeouttask.ui.theme.Dimensions
-import com.indexer.timeouttask.ui.theme.Purple200
+import com.indexer.timeouttask.ui.theme.Blue200
 import com.indexer.timeouttask.ui.theme.rowBackgroundColor
 
 @Composable
@@ -147,7 +147,7 @@ private fun MakeItButton(processIntentWithCurrentValue: (PomodoroScreenIntent) -
       keyboardController?.hide()
       processIntentWithCurrentValue(MakeIt)
     },
-    buttonColor = Purple200,
+    buttonColor = Blue200,
     textColor = Color.White
   )
 }

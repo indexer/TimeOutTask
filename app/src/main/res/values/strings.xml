@@ -5,4 +5,7 @@
     <string name="app_title">Pomodoro</string>
     <string name="estimate_pomodoro">Estimate Pomodoro:</string>
     <string name="create_new_task">"Create your Task And Make Completed"</string>
+    <string name="congratulation_title">Congratulations!</string>
+    <string name="congratulation_description">Congratulations, you\'ve completed the task!</string>
+    <string name="let_go_next">Let Go Next!</string>
 </resources>
