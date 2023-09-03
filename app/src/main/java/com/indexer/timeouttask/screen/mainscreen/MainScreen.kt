@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroCompleteScreen
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroListScreen
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.AlarmTimerState
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
+import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.DismissCompletedTask
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenState
 import com.indexer.timeouttask.screen.pomodoroscreen.viewmodel.PomodoroScreenViewModel
 import com.indexer.timeouttask.ui.theme.Blue700
@@ -55,6 +57,7 @@ fun PomodoroScreen() {
   val pomodoroList = viewModel.pomodoroList.collectAsState()
   val showCongratulationsScreen = viewModel.showCongratulationsScreen.collectAsState()
   val showAddScreen = viewModel.showAddScreen.collectAsState()
+  val timerState = viewModel.timeState.collectAsState()
 
   val content: @Composable (PaddingValues) -> Unit = { _ ->
     // Your screen content here
@@ -64,36 +67,42 @@ fun PomodoroScreen() {
       showAddScreen = showAddScreen.value,
       onTaskAdded = {
         viewModel.taskAdded.value = true
-      }, onMoveItem = onMoveItem, processIntentWithCurrentValue
+      }, onMoveItem = onMoveItem, processIntentWithCurrentValue, timerState.value
     )
   }
   TimeOutTaskTheme {
     Scaffold(
       topBar = {
-        TopAppBar(
-          title = {
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.Start
-            ) {
-              Text(
-                text = stringResource(id = R.string.app_title), maxLines = 1
-              )
-            }
-          })
+        if (!showCongratulationsScreen.value) {
+          TopAppBar(
+            title = {
+              Row(
+                modifier = Modifier
+                  .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+              ) {
+                Text(
+                  text = stringResource(id = R.string.app_title), maxLines = 1, color = Color.White
+                )
+              }
+            })
+        }
       },
       floatingActionButton = {
-        FloatingActionButton(
-          onClick = {
-            viewModel.taskAdded.value = true
-          },
-          backgroundColor = MaterialTheme.colors.primary,
-          contentColor = Color.White
-        ) {
-          Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = null
-          )
+        if (!showCongratulationsScreen.value) {
+          FloatingActionButton(
+            onClick = {
+              viewModel.taskAdded.value = true
+              processIntentWithCurrentValue(DismissCompletedTask)
+            },
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = Color.White
+          ) {
+            Icon(
+              imageVector = Icons.Default.Add,
+              contentDescription = null
+            )
+          }
         }
       },
       floatingActionButtonPosition = FabPosition.End,
@@ -111,7 +120,8 @@ fun PomodoroContent(
   showAddScreen: Boolean,
   onTaskAdded: () -> Unit,
   onMoveItem: (Int, Int) -> Unit,
-  processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit
+  processIntentWithCurrentValue: (PomodoroScreenIntent) -> Unit,
+  remainTimerState: AlarmTimerState
 ) {
   Column {
     if (!showCongratulationsScreen) {
@@ -139,7 +149,11 @@ fun PomodoroContent(
         NewTaskButton(onTaskAdded = onTaskAdded)
       }
     } else {
-      PomodoroCompleteScreen(processIntentWithCurrentValue = processIntentWithCurrentValue)
+      PomodoroCompleteScreen(
+        processIntentWithCurrentValue = processIntentWithCurrentValue,
+        completedTask = pomodoroList[0],
+        remainingTime = remainTimerState.remainingTime
+      )
     }
   }
 }
@@ -149,7 +163,9 @@ data class PomodoroTask(
   var description: String,
   val alarmTimerState: AlarmTimerState,
   var progress: Float,
-  var backgroundColor: Int,var date : String)
+  var backgroundColor: Int,
+  var date: String
+)
 
 @Composable
 fun NewTaskButton(onTaskAdded: () -> Unit) {

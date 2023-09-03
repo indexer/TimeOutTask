@@ -14,28 +14,28 @@ import kotlinx.coroutines.flow.StateFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : ViewModel() {
 
   private val pomodoroScreenState = MutableStateFlow(PomodoroScreenState())
   val pomodoroScreenStateState: StateFlow<PomodoroScreenState> = pomodoroScreenState
 
-  private val timeState = MutableStateFlow(AlarmTimerState())
+  val timeState = MutableStateFlow(AlarmTimerState())
 
   val pomodoroListScreenState = MutableStateFlow(emptyList<PomodoroTask>())
   val pomodoroList: StateFlow<List<PomodoroTask>> = pomodoroListScreenState
 
-  private val taskCompleted = MutableStateFlow(false)
+  private var taskCompleted = MutableStateFlow(false)
   val showCongratulationsScreen: StateFlow<Boolean> = taskCompleted
 
   val taskAdded = MutableStateFlow(false)
   val showAddScreen: StateFlow<Boolean> = taskAdded
 
   private val completedTask = MutableStateFlow<PomodoroTask?>(null)
-
   private var currentTimer: CountDownTimer? = null
 
-  private val pomodoroDurationMinutes = 25
+  private val pomodoroDurationMinutes = 1
   private val durationInMilliseconds =pomodoroDurationMinutes * 60 * 1000L
   private val colorGenerator = ColorGenerator()
 
@@ -65,7 +65,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     pomodoroListScreenState.value = swappedList
     if (toIndex == 0) {
       currentTimer?.cancel()
-      startTimer(updatedPomodoroList[0].alarmTimerState.elapsedTime, 0)
+      startTimerWithDuration(updatedPomodoroList[0].alarmTimerState.elapsedTime, 0)
     }
   }
 
@@ -78,7 +78,13 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     }
   }
 
-  private fun startTimer(
+  private fun startTimerForShortBreak() {
+    currentTimer?.cancel()
+    val durationInMillis = 10 * 60 * 1000L
+    startTimerWithDuration(durationInMillis, 0)
+  }
+
+  private fun startTimerWithDuration(
     durationInMillis: Long,
     itemIndex: Int
   ) {
@@ -86,6 +92,8 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     currentTimer = object : CountDownTimer(durationInMillis, 1000) {
       override fun onTick(millisUntilFinished: Long) {
         val elapsedTime = durationInMillis - millisUntilFinished
+        val remainingTaskTime = durationInMillis - elapsedTime
+        timeState.value.remainingTime = formatTime(timeInMillis = remainingTaskTime)
         updateElapsedTimeForAlarm(true, elapsedTime, itemIndex)
       }
 
@@ -103,11 +111,10 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     if (completedTaskIndex != -1) {
       val updatedTaskList = useCase.dismissCompletedTask(currentTaskList, completedTaskIndex)
       pomodoroListScreenState.value = updatedTaskList
-
       // Start the timer for the next task if available
       val nextTaskIndex = useCase.findIndexOfNextIncompleteTask(updatedTaskList, 0)
       if (nextTaskIndex != -1) {
-        startTimer(updatedTaskList[nextTaskIndex].alarmTimerState.elapsedTime, nextTaskIndex)
+        startTimerWithDuration(updatedTaskList[nextTaskIndex].alarmTimerState.elapsedTime, nextTaskIndex)
       }
       taskCompleted.value = false
     }
@@ -117,12 +124,12 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     pomodoroDurationMinutes: Int,
     itemIndex: Int
   ) {
-    timeState.value.elapsedTime =
-      1 * 60 * 1000L// Convert minutes to milliseconds
+    timeState.value.elapsedTime =pomodoroDurationMinutes * durationInMilliseconds
+     // 1 * 60 * 1000L// Convert minutes to milliseconds
     if (pomodoroListScreenState.value.isNotEmpty() &&
       pomodoroListScreenState.value[0].alarmTimerState.isActive && itemIndex == 0
     ) {
-      startTimer(timeState.value.elapsedTime, itemIndex)
+      startTimerWithDuration(timeState.value.elapsedTime, itemIndex)
     }
   }
 
@@ -135,9 +142,9 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     val hours = totalMinutes / 60
     val minutes = totalMinutes % 60
     val timeText = if (hours > 0) {
-      "Total Time: $hours hr $minutes min"
+      "$hours hr $minutes min"
     } else {
-      "Total Time: $minutes min"
+      "$minutes min"
     }
     return timeText
   }
@@ -147,7 +154,7 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     if (updatedPomodoroList.isNotEmpty() && updatedPomodoroList[0].progress == 100f) {
       newPomodoro.alarmTimerState.isActive = true
       updatedPomodoroList.add(0, newPomodoro)
-      startTimer(newPomodoro.alarmTimerState.elapsedTime, 0)
+      startTimerWithDuration(newPomodoro.alarmTimerState.elapsedTime, 0)
     } else {
       if (updatedPomodoroList.isNotEmpty() && updatedPomodoroList[updatedPomodoroList.size - 1].progress == 100f) {
         updatedPomodoroList.add(updatedPomodoroList.size - 1, newPomodoro)
@@ -166,6 +173,10 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
       is PomodoroScreenIntent.MakeIt -> handleMakeIt()
       is PomodoroScreenIntent.UpdatePomodoroTitle -> handleUpdatePomodoroTitle(intent.value)
       is PomodoroScreenIntent.DismissCompletedTask -> handleDismissCompletedTask()
+      is PomodoroScreenIntent.ShortBreak -> {
+        pomodoroList.value[0].alarmTimerState.elapsedTime = 10 * 60 * 1000L
+        startTimerForShortBreak()
+      }
     }
   }
 
@@ -213,6 +224,8 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     onDismiss()
   }
 
+
+
   private fun updateElapsedTimeForAlarm(
     isTimerRunning: Boolean,
     currentElapsedTime: Long,
@@ -225,15 +238,26 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     val updatedTaskList = pomodoroListScreenState.value.toMutableList()
     val initialTaskTime = updatedTaskList[taskIndex].alarmTimerState.elapsedTime
     val remainingTaskTime = initialTaskTime - currentElapsedTime
+
     val taskProgress = useCase.calculateProgress(remainingTaskTime, initialTaskTime)
     updatedTaskList[taskIndex] = updatedTaskList[taskIndex].copy(progress = taskProgress)
-
     if (taskProgress == 100f) {
-      updatedTaskList[taskIndex].date = getCurrentDateTime()
-      completedTask.value = updatedTaskList[taskIndex]
-      taskCompleted.value = pomodoroListScreenState.value.any { it.progress != 100f }
+      if (showCongratulationsScreen.value){
+        taskCompleted.value = false
+      }else {
+        updatedTaskList[taskIndex].date = getCurrentDateTime()
+        completedTask.value = updatedTaskList[taskIndex]
+        taskCompleted.value = pomodoroListScreenState.value.any { it.progress != 100f }
+      }
     }
     pomodoroListScreenState.value = updatedTaskList
+  }
+
+  private fun formatTime(timeInMillis: Long): String {
+    val hours = TimeUnit.MILLISECONDS.toHours(timeInMillis)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(timeInMillis) % 60
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(timeInMillis) % 60
+    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
   }
 
   private fun getCurrentDateTime(): String {
@@ -246,10 +270,9 @@ class PomodoroScreenViewModel(private val useCase: PomodoroScreenUseCase) : View
     return PomodoroTask(
       pomodoroScreenState.pomodoroTitle,
       getPomodoroDescription(pomodoroScreenState.pomodoroDurationInMinutes),
-      AlarmTimerState(
-        1 * 60 * 1000L,
-        /*convertPomodoroToMilliseconds(pomodoroScreenState.pomodoroDurationInMinutes)*/
-        pomodoroListScreenState.value.isEmpty()
+      AlarmTimerState(60000L,
+        //convertPomodoroToMilliseconds(pomodoroScreenState.pomodoroDurationInMinutes),
+        pomodoroListScreenState.value.isEmpty(),"",
       ), 0f,colorGenerator.getRandomColor(),getCurrentDateTime()
     )
   }

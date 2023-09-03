@@ -23,8 +23,10 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AvTimer
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
 import com.indexer.timeouttask.ui.theme.CircularIndicatorBackgroundColor
+import com.indexer.timeouttask.ui.theme.Dimensions
 import com.indexer.timeouttask.ui.theme.rowBackgroundColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -114,9 +117,9 @@ private fun PomodoroListItem(
 ) {
   val isBeingDragged = displacementOffset != null
   val backgroundColor: Color = if (isBeingDragged) {
-    Color(item.backgroundColor?:0).copy(alpha = 0.9f)
-  } else{
-    Color(item.backgroundColor ?:0)
+    Color(item.backgroundColor).copy(alpha = 0.9f)
+  } else {
+    Color(item.backgroundColor)
   }
 
   Column(
@@ -127,8 +130,7 @@ private fun PomodoroListItem(
       .fillMaxHeight()
   ) {
     Column(
-      modifier = Modifier.padding(8.dp),
-      verticalArrangement = Arrangement.spacedBy(8.dp)
+      modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
       PomodoroProgressCard(item, backgroundColor)
     }
@@ -141,10 +143,11 @@ private fun PomodoroProgressCard(
   backgroundColor: Color,
 ) {
   Card(
-    shape = RoundedCornerShape(16.dp),
+    shape = RoundedCornerShape(8.dp),
     backgroundColor = backgroundColor,
     modifier = Modifier
-      .fillMaxWidth()) {
+      .fillMaxWidth()
+  ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically
@@ -155,9 +158,10 @@ private fun PomodoroProgressCard(
         PomodoroCompletionBox()
       }
       // Wrap the details and watermark in a Column
+      // Expand to take available space
       Column(
         modifier = Modifier
-          .weight(1f) // Expand to take available space
+          .weight(1f)
           .padding(4.dp)
       ) {
         PomodoroDetailsColumn(item)
@@ -168,7 +172,7 @@ private fun PomodoroProgressCard(
               style = SpanStyle(
                 color = Color.White,
                 fontFamily = FontFamily.SansSerif,
-                fontSize = 14.sp,
+                fontSize = Dimensions.textSize.medium,
                 letterSpacing = 0.1.sp
               )
             ) {
@@ -177,8 +181,11 @@ private fun PomodoroProgressCard(
           }.toAnnotatedString()
         Row(
           verticalAlignment = Alignment.CenterVertically,
-          modifier = Modifier
-            .padding(8.dp)
+          modifier = Modifier.padding(
+            start =
+            Dimensions.spacing.small,
+            bottom = Dimensions.spacing.small
+          )
         ) {
           Icon(
             imageVector = Icons.Default.DateRange,
@@ -187,8 +194,7 @@ private fun PomodoroProgressCard(
             modifier = Modifier.size(24.dp)
           )
           Text(
-            modifier = Modifier
-              .padding(8.dp),
+            modifier = Modifier.padding(8.dp),
             text = watermarkText, textAlign = TextAlign.End
           )
         }
@@ -197,13 +203,11 @@ private fun PomodoroProgressCard(
   }
 }
 
-
-
 @Composable
 private fun PomodoroProgressBox(progressValue: Float) {
   Box(
     modifier = Modifier
-      .padding(8.dp)
+      .padding(Dimensions.spacing.small)
       .size(80.dp)
       .background(CircularIndicatorBackgroundColor, shape = CircleShape),
     contentAlignment = Alignment.Center
@@ -247,25 +251,39 @@ private fun PomodoroCompletionBox() {
 private fun PomodoroDetailsColumn(item: PomodoroTask) {
   Column(
     modifier = Modifier
-      .padding(8.dp).wrapContentWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)
+      .padding(Dimensions.spacing.small)
+      .wrapContentWidth(),
+    verticalArrangement = Arrangement.spacedBy(Dimensions.spacing.small)
   ) {
     Text(
       text = item.title,
       modifier = Modifier.wrapContentWidth(),
       style = MaterialTheme.typography.caption,
       fontFamily = FontFamily.SansSerif,
-      fontSize = 20.sp,
+      fontSize = Dimensions.textSize.large,
       color = Color.White,
       fontWeight = FontWeight.SemiBold
     )
-    Text(
-      text = item.description,
-      modifier = Modifier.wrapContentWidth(),
-      fontFamily = FontFamily.SansSerif,
-      fontSize = 13.sp,
-      style = MaterialTheme.typography.subtitle1, color = Color.White,
-      fontWeight = FontWeight.Normal
-    )
+    Row(
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Icon(
+        imageVector = Icons.Default.Timer,
+        contentDescription = null, // Set a proper content description
+        tint = Color.White,
+        modifier = Modifier.size(24.dp)
+      )
+      Text(
+        text = item.description,
+        modifier = Modifier
+          .wrapContentWidth()
+          .padding(Dimensions.spacing.small),
+        fontFamily = FontFamily.SansSerif,
+        fontSize = Dimensions.textSize.normal,
+        style = MaterialTheme.typography.subtitle1, color = Color.White,
+        fontWeight = FontWeight.Medium
+      )
+    }
   }
 }
 

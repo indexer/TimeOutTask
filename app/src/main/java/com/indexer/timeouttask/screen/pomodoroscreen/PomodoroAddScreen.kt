@@ -59,9 +59,10 @@ fun PomodoroAddScreen(
         .wrapContentHeight()
     ) {
       PomodoroTitleInput(
-        currentTitle = currentTitle, processIntentWithCurrentValue = processIntentWithCurrentValue
+        currentTitle = currentTitle,
+        processIntentWithCurrentValue = processIntentWithCurrentValue
       )
-      Row(modifier = Modifier.padding(8.dp, 8.dp)) {
+      Row(modifier = Modifier.padding(Dimensions.spacing.small)) {
         PomodoroNumberInput(currentValue, processIntentWithCurrentValue)
         Spacer(modifier = Modifier.width(Dimensions.spacing.small))
         IncrementDecrementButtons(processIntentWithCurrentValue)
