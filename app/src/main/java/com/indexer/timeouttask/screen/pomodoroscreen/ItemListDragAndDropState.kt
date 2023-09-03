@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -22,9 +24,9 @@ class ItemListDragAndDropState(
   private val lazyListState: LazyListState,
   private val onMove: (Int, Int) -> Unit,
 ) {
-  private var draggedDistance by mutableStateOf(0f)
+  private var draggedDistance by mutableFloatStateOf(0f)
   private var initiallyDraggedElement by mutableStateOf<LazyListItemInfo?>(null)
-  private var currentIndexOfDraggedItem by mutableStateOf(-1)
+  private var currentIndexOfDraggedItem by mutableIntStateOf(-1)
   private var overscrollJob by mutableStateOf<Job?>(null)
 
   // Retrieve the currently dragged element's info

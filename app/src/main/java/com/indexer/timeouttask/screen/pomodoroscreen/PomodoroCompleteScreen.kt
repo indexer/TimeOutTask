@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.indexer.timeouttask.R.string
 import com.indexer.timeouttask.commonbutton.CommonOutlineButton
-import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
+import com.indexer.timeouttask.screen.pomodoroscreen.data.PomodoroTask
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.DismissCompletedTask
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.ShortBreak

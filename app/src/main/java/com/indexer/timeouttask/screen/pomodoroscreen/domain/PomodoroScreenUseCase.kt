@@ -1,7 +1,6 @@
 package com.indexer.timeouttask.screen.pomodoroscreen.domain
 
-import android.util.Log
-import com.indexer.timeouttask.screen.mainscreen.PomodoroTask
+import com.indexer.timeouttask.screen.pomodoroscreen.data.PomodoroTask
 
 class PomodoroScreenUseCase {
   fun updatePomodoroNumber(

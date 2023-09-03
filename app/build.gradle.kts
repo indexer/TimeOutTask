@@ -39,6 +39,10 @@ android {
     jvmTarget = "1.8"
   }
 
+  testOptions{
+    unitTests.isReturnDefaultValues = true
+  }
+
   buildFeatures {
     compose= true
   }
@@ -50,6 +54,8 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
+
+
 }
 
 tasks.register("generateStringsXml") {

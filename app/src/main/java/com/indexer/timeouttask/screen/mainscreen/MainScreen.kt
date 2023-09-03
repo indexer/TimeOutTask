@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +37,7 @@ import com.indexer.timeouttask.R
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroAddScreen
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroCompleteScreen
 import com.indexer.timeouttask.screen.pomodoroscreen.PomodoroListScreen
+import com.indexer.timeouttask.screen.pomodoroscreen.data.PomodoroTask
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.AlarmTimerState
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent
 import com.indexer.timeouttask.screen.pomodoroscreen.domain.PomodoroScreenIntent.DismissCompletedTask
@@ -158,14 +158,7 @@ fun PomodoroContent(
   }
 }
 
-data class PomodoroTask(
-  var title: String,
-  var description: String,
-  val alarmTimerState: AlarmTimerState,
-  var progress: Float,
-  var backgroundColor: Int,
-  var date: String
-)
+
 
 @Composable
 fun NewTaskButton(onTaskAdded: () -> Unit) {
